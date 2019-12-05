@@ -35,6 +35,8 @@ link_directories(${CORE_LIBS}/imgui/lib)
 
 add_executable(SingularityEngine ${testSrc})
 
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SingularityEngine)
+
 file(COPY Assets/ DESTINATION ${EXECUTABLE_OUTPUT_PATH}/Assets)
 
 target_link_libraries(SingularityEngine Core)
