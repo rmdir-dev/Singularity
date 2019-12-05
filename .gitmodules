@@ -1,0 +1,11 @@
+[submodule "Core/dep/libs/glfw"]
+    path = Core/dep/libs/glfw
+    url = https://github.com/glfw/glfw
+
+[submodule "Core/dep/libs/assimp"]
+    path = Core/dep/libs/assimp
+    url = https://github.com/assimp/assimp
+
+[submodule "Core/src/Utils"]
+    path = Core/src/Utils
+    url = https://github.com/rmdir-dev/Utils
