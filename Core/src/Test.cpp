@@ -1,5 +1,6 @@
 #include "Test.h"
 #include "Utils/Timer.h"
+#include "Utils/Log.h"
 #include <iostream>
 
 GLFWwindow* Test::window = nullptr;
@@ -32,5 +33,5 @@ void Test::destroy(){
 }
 
 void Test::KeyPressCallBack(GLFWwindow* window, int key, int scancode, int action, int mods){
-    
+    CORE_INFO(scancode);
 }
