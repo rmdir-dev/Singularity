@@ -3,7 +3,9 @@
 #include "Utils/Log.h"
 #include <iostream>
 
+
 GLFWwindow* Test::window = nullptr;
+EventTest Test::eTest;
 
 void Test::windowInitTest(){
     glfwInit();
@@ -17,6 +19,7 @@ void Test::windowInitTest(){
 
     glfwSetKeyCallback(window, KeyPressCallBack);
 
+    
 }
 
 void Test::mainLoop(){
@@ -32,6 +35,42 @@ void Test::destroy(){
     glfwTerminate();
 }
 
+EventTest::EventTest() 
+{
+    eventCallBack = BIND_EVENT_FCT(EventTest::onEvent);
+}
+
+void EventTest::onEvent(Event::Event& e)
+{
+	Event::Dispatcher dispatcher(e);
+	dispatcher.dispatch<Event::KeyPressed>(BIND_EVENT_FCT(EventTest::keyPressEvent));
+}
+
+bool EventTest::keyPressEvent(Event::KeyPressed& e)
+{
+    CORE_INFO("EVENT TYPE ", e.toString());
+    std::cout << e.getKeyCode() << "\n";
+	return true;
+}
+
 void Test::KeyPressCallBack(GLFWwindow* window, int key, int scancode, int action, int mods){
-    CORE_INFO(scancode);
+    switch(action)
+    {
+    case GLFW_PRESS:
+    {
+    	Event::KeyPressed event(key, 0);
+    	eTest.eventCallBack(event);
+    	break;
+    }
+
+    case GLFW_RELEASE:
+    {
+    	break;
+    }
+
+    case GLFW_REPEAT:
+    {
+    	break;
+    }
+    }
 }
