@@ -4,35 +4,23 @@
 #include <iostream>
 
 
-GLFWwindow* Test::window = nullptr;
+std::unique_ptr<Window::Window> Test::Window;
 EventTest Test::eTest;
 
 void Test::windowInitTest(){
-    glfwInit();
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-    window = glfwCreateWindow(800, 600, "Test window", nullptr, nullptr);
-
-    glfwSetWindowUserPointer(window, window);
-
-    glfwSetKeyCallback(window, KeyPressCallBack);
-
-    
+    Window = std::make_unique<Window::Window>("Test window", 1024, 720);
 }
 
 void Test::mainLoop(){
     Timer t;
-    while(!glfwWindowShouldClose(window))   
+    while(Window->IsWindowClose())
     {
-        glfwPollEvents();
+        Window->onMainLoop();
     }
 }
 
 void Test::destroy(){
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    Window->CloseWindow();
 }
 
 EventTest::EventTest() 
@@ -49,28 +37,5 @@ void EventTest::onEvent(Event::Event& e)
 bool EventTest::keyPressEvent(Event::KeyPressed& e)
 {
     CORE_INFO("EVENT TYPE ", e.toString());
-    std::cout << e.getKeyCode() << "\n";
 	return true;
-}
-
-void Test::KeyPressCallBack(GLFWwindow* window, int key, int scancode, int action, int mods){
-    switch(action)
-    {
-    case GLFW_PRESS:
-    {
-    	Event::KeyPressed event(key, 0);
-    	eTest.eventCallBack(event);
-    	break;
-    }
-
-    case GLFW_RELEASE:
-    {
-    	break;
-    }
-
-    case GLFW_REPEAT:
-    {
-    	break;
-    }
-    }
 }

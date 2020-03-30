@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include "Utils/Event/Event.h"
 #include "Utils/Event/KeyEvent.h"
+#include "Window/Window.h"
 
 using EventCallbackFct = std::function<void(Event::Event&)>;
 
@@ -23,9 +24,7 @@ struct Test{
 
     static void destroy();    
 
-    static void KeyPressCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
-
-    static GLFWwindow* window;
+    static std::unique_ptr<Window::Window> Window;
 
     static EventTest eTest;
 };
