@@ -3,12 +3,21 @@
 #include "Utils/Log.h"
 #include <iostream>
 
+Test::Test() 
+{
+    
+}
 
-std::unique_ptr<Window::Window> Test::Window;
-EventTest Test::eTest;
+
+Test::~Test() 
+{
+    std::cout << "Destroy\n";
+    destroy();
+}
 
 void Test::windowInitTest(){
     Window = std::make_unique<Window::Window>("Test window", 1024, 720);
+    Window->SetEventCallback(BIND_EVENT_FCT(Test::onEvent));
 }
 
 void Test::mainLoop(){
@@ -23,18 +32,13 @@ void Test::destroy(){
     Window->CloseWindow();
 }
 
-EventTest::EventTest() 
-{
-    eventCallBack = BIND_EVENT_FCT(EventTest::onEvent);
-}
-
-void EventTest::onEvent(Event::Event& e)
+void Test::onEvent(Event::Event& e)
 {
 	Event::Dispatcher dispatcher(e);
-	dispatcher.dispatch<Event::KeyPressed>(BIND_EVENT_FCT(EventTest::keyPressEvent));
+	dispatcher.dispatch<Event::KeyPressed>(BIND_EVENT_FCT(Test::keyPressEvent));
 }
 
-bool EventTest::keyPressEvent(Event::KeyPressed& e)
+bool Test::keyPressEvent(Event::KeyPressed& e)
 {
     CORE_INFO("EVENT TYPE ", e.toString());
 	return true;

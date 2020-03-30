@@ -34,7 +34,7 @@ namespace Window
 
         void CloseWindow(); 
 
-        void SetEventCallback(const EventCallbackFct& callback);
+        virtual void SetEventCallback(const EventCallbackFct& callback);
 
         bool IsWindowClose();       
 

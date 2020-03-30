@@ -4,27 +4,20 @@
 #include "Utils/Event/KeyEvent.h"
 #include "Window/Window.h"
 
-using EventCallbackFct = std::function<void(Event::Event&)>;
-
-struct EventTest
-{
-    EventTest();
-
-    EventCallbackFct eventCallBack;
-
-    void onEvent(Event::Event& e);
-
-    bool keyPressEvent(Event::KeyPressed& e);
-};
-
 struct Test{
-    static void windowInitTest();
+    Test();
+    
+    ~Test();
 
-    static void mainLoop();
+    void windowInitTest();
 
-    static void destroy();    
+    void mainLoop();
 
-    static std::unique_ptr<Window::Window> Window;
+    void destroy();
 
-    static EventTest eTest;
+    void onEvent(Event::Event& e); 
+
+    bool keyPressEvent(Event::KeyPressed& e); 
+
+    std::unique_ptr<Window::Window> Window;
 };

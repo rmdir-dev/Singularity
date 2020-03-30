@@ -2,9 +2,9 @@
 
 int main(int argc, char** argv)
 {
-    Test::windowInitTest();
-    Test::mainLoop();
-    Test::destroy();
+    Test t;
+    t.windowInitTest();
+    t.mainLoop();
 
     return 0;
 }
