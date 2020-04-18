@@ -96,12 +96,12 @@ namespace Window
         }
         CORE_INFO("\tOpenGL \t[OK]");
 
-        CORE_INFO("----------------------------------");
+        CORE_INFO("\n----------------------------------");
 	    CORE_INFO("OpenGL Status:");
 	    CORE_INFO("    ", (const char*)glGetString(GL_VERSION));
 	    CORE_INFO("    ", (const char*)glGetString(GL_VENDOR));
 	    CORE_INFO("    ", (const char*)glGetString(GL_RENDERER));
-	    CORE_INFO("----------------------------------");
+	    CORE_INFO("----------------------------------\n");
 
         glViewport(0, 0, m_WindowInfo.Width, m_WindowInfo.Height);
 
