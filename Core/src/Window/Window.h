@@ -2,7 +2,7 @@
 
 #include <Utils/pch.h>
 #include <Utils/Event/Event.h>
-#define GLFW_INCLUDE_NONE
+#include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <memory>
 
@@ -48,6 +48,11 @@ namespace Window
         GLFW Main loop function
         */
         void onMainLoop();
+        
+        /*
+        set clear color and clear color buffer bit;
+        */
+        void ClearColor(float red, float green, float blue, float alpha);
 
         /*
         Close GLFW window and kill GLFW process,
@@ -78,10 +83,28 @@ namespace Window
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
     //!!!!!STATIC CALLBACK!!!!!!
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //KEYBOARD
         /*
         Callback when a key is pressed.
         */
         static void KeyPressCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+        //MOUSE
+
+        //WINDOW
+
+        //FRAMEBUFFER
+        /*
+        Callback when the Framebuffer size changes.
+        */
+        static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+
+        //GLFW
+        static void GLFWErrorCallback(int error, const char* description);
+
+        //OPENGL
+        static void OpenGLErrorCallback(GLenum source, GLenum type, GLuint id, 
+                                        GLenum severity, GLsizei length, const GLchar* msg, const void* data);
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
     //!!!!!!!!VARIABLES!!!!!!!!!
