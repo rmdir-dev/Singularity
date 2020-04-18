@@ -1,8 +1,8 @@
 #pragma once
-#include <GLFW/glfw3.h>
 #include "Utils/Event/Event.h"
 #include "Utils/Event/KeyEvent.h"
 #include "Window/Window.h"
+#include "Layer/TestLayer.h"
 
 struct Test{
     Test();
@@ -20,4 +20,5 @@ struct Test{
     bool keyPressEvent(Event::KeyPressed& e); 
 
     std::unique_ptr<Window::Window> Window;
+    std::unique_ptr<Layer::TestLayer> tl;
 };
