@@ -12,15 +12,17 @@ Test::Test()
 Test::~Test() 
 {
     std::cout << "Destroy\n";
-    destroy();
+    destroy();    
 }
 
-void Test::windowInitTest(){
+void Test::windowInitTest()
+{
     Window = std::make_unique<Window::Window>("Test window", 1024, 720);
     Window->SetEventCallback(BIND_EVENT_FCT(Test::onEvent));
 }
 
-void Test::mainLoop(){
+void Test::mainLoop()
+{
     Timer t;
     while(Window->IsWindowClose())
     {
@@ -28,7 +30,8 @@ void Test::mainLoop(){
     }
 }
 
-void Test::destroy(){
+void Test::destroy()
+{
     Window->CloseWindow();
 }
 

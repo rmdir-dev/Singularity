@@ -22,6 +22,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(GLOB_RECURSE ehSRC
     "src/*.h"
     "src/*.cpp"
+    "src/*.c"
 )
 
 set(LIBRARY_OUTPUT_PATH
