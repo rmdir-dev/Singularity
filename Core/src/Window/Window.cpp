@@ -17,6 +17,7 @@ namespace Window
         {
             CORE_CRITICAL("Failed to start the engine.\n ENGINE SHUTDOWN!");
         }
+        CORE_INFO("Engine started!\n\n");
     }
 
     Window::~Window() 
@@ -36,6 +37,7 @@ namespace Window
         glfwDestroyWindow(m_Window);
         //Terminate GLFW
         glfwTerminate();
+        CORE_INFO("Engine shut down!\n\n");
     }
 
     void Window::SetEventCallback(const EventCallbackFct& callback) 

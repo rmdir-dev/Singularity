@@ -11,7 +11,7 @@ Test::Test()
 
 Test::~Test() 
 {
-    std::cout << "Destroy\n";
+    CORE_INFO("Destroy\n");
     destroy();    
 }
 
@@ -23,7 +23,7 @@ void Test::windowInitTest()
 
 void Test::mainLoop()
 {
-    Timer t;
+    Timer t(__func__);
     while(Window->IsWindowClose())
     {
         Window->onMainLoop();
