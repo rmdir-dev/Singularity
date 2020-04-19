@@ -3,6 +3,7 @@
 #include "Layer.h"
 #include "Rendering/Shaders/Shader.h"
 #include "Rendering/Buffers/VertexLayout.h"
+#include "Rendering/Texture/Texture.h"
 
 namespace Layer 
 {
@@ -53,6 +54,11 @@ namespace Layer
 
         //Test shader.
         std::unique_ptr<Rendering::Shader> m_Shader;
+
+        //Test Texture
+        std::unique_ptr<Rendering::Texture> m_Texture;
+        std::unique_ptr<Rendering::Texture> m_Texture2;
+
         //Test Vertex Array
         uint VAO, IBO;
 

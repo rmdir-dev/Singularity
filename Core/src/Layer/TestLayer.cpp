@@ -23,6 +23,13 @@ namespace Layer
         
 
         m_Shader = std::make_unique<Rendering::Shader>("Assets/simpleShader");
+        m_Texture = std::make_unique<Rendering::Texture>("Assets/wall.jpg");
+        m_Texture2 = std::make_unique<Rendering::Texture>("Assets/chalet.jpg", 1);
+        m_Shader->Bind();
+        //Set the texture to the good active texture slot
+        m_Shader->SetUniform1i("texture0", 0);
+        m_Shader->SetUniform1i("texture1", 1);
+        m_Shader->Unbind();
     }
 
 
@@ -68,6 +75,8 @@ namespace Layer
     void TestLayer::OnRender() 
     {
         m_Shader->Bind();
+        m_Texture->Bind();
+        m_Texture2->Bind();
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         m_Shader->Unbind();
