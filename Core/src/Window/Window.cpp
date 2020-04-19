@@ -59,6 +59,11 @@ namespace Window
         return !glfwWindowShouldClose(m_Window);
     }
 
+    void Window::SetWindowClose(bool value) 
+    {
+        glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
+    }
+
     bool Window::Init() 
     {
         //Start GLFW

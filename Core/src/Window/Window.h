@@ -25,6 +25,15 @@ namespace Window
         bool Vsync, Closed;
         EventCallbackFct EventCallback;
 
+        /*
+        Constructor for WindowInfo.
+        Args :
+        - Title the window title
+        - Width the window with
+        - Height the window height
+        - Vsync is Vsync on or off
+        - Closed is the window closed or not DEFAULT false
+        */
         WindowInfo(const char*title = "Test Window",
                     uint width = 1280,
                     uint height = 720,
@@ -67,7 +76,12 @@ namespace Window
         /*
         return the status of the window, false if the window is closed.
         */
-        bool IsWindowClose();       
+        bool IsWindowClose();   
+
+        /*
+        Set the close variable to true.
+        */    
+        void SetWindowClose(bool value);
 
     private:
         /*
