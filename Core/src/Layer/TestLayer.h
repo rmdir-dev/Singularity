@@ -5,6 +5,8 @@
 #include "Rendering/Buffers/VertexLayout.h"
 #include "Rendering/Texture/Texture.h"
 
+#define INIDICE_NBR 36
+
 namespace Layer 
 {
     class TestLayer : public Layer
@@ -50,7 +52,7 @@ namespace Layer
         std::vector<Rendering::VertexLayout> m_Vertices;
 
         //Test indices
-        uint m_Indices[6];
+        uint m_Indices[INIDICE_NBR];
 
         //Test shader.
         std::unique_ptr<Rendering::Shader> m_Shader;
@@ -58,6 +60,14 @@ namespace Layer
         //Test Texture
         std::unique_ptr<Rendering::Texture> m_Texture;
         std::unique_ptr<Rendering::Texture> m_Texture2;
+
+        //TEST MVP matrix
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
+
+        //Rotation base
+        float rotation;
 
         //Test Vertex Array
         uint VAO, IBO;
