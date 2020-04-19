@@ -37,7 +37,7 @@ namespace Window
         //Set the color value to reset the framebuffer to 
         glClearColor(red, green, blue, alpha);
         //Clear the color buffer bit & the depth buffer.(TODO)
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void Window::CloseWindow() 
@@ -124,6 +124,9 @@ namespace Window
 	    CORE_INFO("----------------------------------\n");
 
         glViewport(0, 0, m_WindowInfo.Width, m_WindowInfo.Height);
+
+        //Enable Depth testing (3D)
+        glEnable(GL_DEPTH_TEST); 
 
         // OPENGL CALLBACK
         glDebugMessageCallback(OpenGLErrorCallback, NULL);
