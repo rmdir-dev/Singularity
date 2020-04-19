@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include "glad/glad.h"
 #include "Utils/Log.h"
+#include "glm/gtc/type_ptr.hpp"
 
 
 namespace Rendering
@@ -113,6 +114,11 @@ namespace Rendering
     void Shader::SetUniform3f(const char* name, float v1, float v2, float v3) 
     {
         glUniform3f(GetUniformLocation(name), v1, v2, v3);
+    }
+
+    void Shader::SetUniformMatrix4fv(const char* name, const glm::mat4& value) 
+    {
+        glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
     }
 
     int Shader::GetUniformLocation(const char* str) 

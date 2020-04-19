@@ -31,6 +31,7 @@ namespace Rendering
         void SetUniform3f(const char* name, float v1, float v2, float v3);
 
         //MATRIX
+        void SetUniformMatrix4fv(const char* name, const glm::mat4& value);
 
     private:
         int GetUniformLocation(const char* str);
