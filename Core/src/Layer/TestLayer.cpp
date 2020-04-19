@@ -1,21 +1,26 @@
 #include "glad/glad.h"
 #include "TestLayer.h"
 #include "Utils/pch.h"
+#include <iostream>
 
 namespace Layer
 {
     TestLayer::TestLayer() 
     {
-        m_Vertices[0] = -0.5f;
-        m_Vertices[1] = -0.5f;
-        m_Vertices[2] = 0.0f;
-        m_Vertices[3] = 0.5f;
-        m_Vertices[4] = -0.5f;
-        m_Vertices[5] = 0.0f;
-        m_Vertices[6] = 0.0f;
-        m_Vertices[7] = 0.5f;
-        m_Vertices[8] = 0.0f;
-        v1 = v2 = v3 = 0.5f;
+                                //POSITIONS                     COLOR                               UVs
+        m_Vertices.push_back({glm::vec3(-0.5f, -0.5f, 0.0f) ,   glm::vec4(0.7f, 0.2f, 0.1f, 1.0f),  glm::vec2(0.0f, 0.0f)});
+        m_Vertices.push_back({glm::vec3(-0.5f, 0.5f, 0.0f)  ,   glm::vec4(0.4f, 0.7f, 0.8f, 1.0f),  glm::vec2(1.0f, 0.0f)});
+        m_Vertices.push_back({glm::vec3(0.5f, -0.5f, 0.0f)  ,   glm::vec4(0.3f, 0.4f, 0.7f, 1.0f),  glm::vec2(0.0f, 1.0f)});
+        m_Vertices.push_back({glm::vec3(0.5f, 0.5f, 0.0f)   ,   glm::vec4(0.1f, 0.8f, 0.5f, 1.0f),  glm::vec2(1.0f, 1.0f)});
+
+        //INDICES
+        m_Indices[0] = 0;
+        m_Indices[1] = 1;
+        m_Indices[2] = 2;
+        m_Indices[3] = 3;
+        m_Indices[4] = 1;
+        m_Indices[5] = 2;
+        
 
         m_Shader = std::make_unique<Rendering::Shader>("Assets/simpleShader");
     }
@@ -28,18 +33,31 @@ namespace Layer
 
     void TestLayer::OnStart() 
     {
+        //ALL THIS CODE WILL BE COMMENTED LATER ON THEIR DEFINITIVE CLASS
         uint VBO;
-        glGenBuffers(1, &VBO);
-
         glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-      
+        glBindVertexArray(VAO);      
+
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &IBO); 
+
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Rendering::VertexLayout) * m_Vertices.size(), &m_Vertices[0], GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, &m_Indices[0], GL_STATIC_DRAW);
+
         glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), 
+        (void*)(offsetof(Rendering::VertexLayout, Rendering::VertexLayout::color)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), 
+        (void*)(offsetof(Rendering::VertexLayout, Rendering::VertexLayout::UVs)));
 
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
     }
 
     void TestLayer::OnShutDown() 
@@ -50,9 +68,8 @@ namespace Layer
     void TestLayer::OnRender() 
     {
         m_Shader->Bind();
-        m_Shader->SetUniform3f("color", v1, v2, v3);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         m_Shader->Unbind();
     }
 
@@ -67,9 +84,6 @@ namespace Layer
     {
         if(e.getKeyCode() == 24)
         {
-            v1 = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
-            v2 = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
-            v3 = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
             return true;
         }     
     }

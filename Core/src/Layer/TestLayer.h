@@ -2,6 +2,7 @@
 
 #include "Layer.h"
 #include "Rendering/Shaders/Shader.h"
+#include "Rendering/Buffers/VertexLayout.h"
 
 namespace Layer 
 {
@@ -45,13 +46,15 @@ namespace Layer
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
     private:
         //Test vertices
-        float m_Vertices[9];
+        std::vector<Rendering::VertexLayout> m_Vertices;
+
+        //Test indices
+        uint m_Indices[6];
+
         //Test shader.
         std::unique_ptr<Rendering::Shader> m_Shader;
         //Test Vertex Array
-        uint VAO;
-        //Test color float
-        float v1, v2, v3;
+        uint VAO, IBO;
 
     public:
     };

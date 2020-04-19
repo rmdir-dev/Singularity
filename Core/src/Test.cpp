@@ -2,10 +2,11 @@
 #include "Utils/Timer.h"
 #include "Utils/Log.h"
 #include <iostream>
+#include "glm/glm.hpp"
 
 Test::Test() 
 {
-    
+
 }
 
 
@@ -56,8 +57,9 @@ bool Test::keyPressEvent(Event::KeyPressed& e)
     
     if(e.getKeyCode() == 9)
     {
-        destroy();
+        Window->SetWindowClose(true);
+        return true;
     }
 
-	return true;
+	return false;
 }
