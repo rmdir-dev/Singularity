@@ -4,6 +4,7 @@
 #include "Rendering/Shaders/Shader.h"
 #include "Rendering/Buffers/VertexLayout.h"
 #include "Rendering/Texture/Texture.h"
+#include "Rendering/Models/Mesh.h"
 
 #define INIDICE_NBR 36
 
@@ -51,15 +52,17 @@ namespace Layer
         //Test vertices
         std::vector<Rendering::VertexLayout> m_Vertices;
 
+        //Test Mesh
+        std::unique_ptr<Rendering::Mesh> m_Mesh;
+
         //Test indices
-        uint m_Indices[INIDICE_NBR];
+        std::vector<uint> m_Indices;
 
         //Test shader.
-        std::unique_ptr<Rendering::Shader> m_Shader;
+        std::shared_ptr<Rendering::Shader> m_Shader;
 
         //Test Texture
-        std::unique_ptr<Rendering::Texture> m_Texture;
-        std::unique_ptr<Rendering::Texture> m_Texture2;
+        std::shared_ptr<Rendering::Texture> m_Texture;
 
         //TEST MVP matrix
         glm::mat4 model;

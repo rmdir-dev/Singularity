@@ -19,56 +19,45 @@ namespace Layer
         m_Vertices.push_back({glm::vec3( 1.0f, -1.0f, -1.0f)   ,   glm::vec4(0.1f, 0.8f, 0.5f, 1.0f),  glm::vec2(0.0f, 0.0f)}); //7
 
         //INDICES
-        m_Indices[0] =  0;
-        m_Indices[1] =  1;
-        m_Indices[2] =  2;
+        m_Indices.push_back(0);
+        m_Indices.push_back(1);
+        m_Indices.push_back(2);
+        m_Indices.push_back(3);
+        m_Indices.push_back(1);
+        m_Indices.push_back(2);
+        m_Indices.push_back(2);
+        m_Indices.push_back(3);
+        m_Indices.push_back(5);
+        m_Indices.push_back(5);
+        m_Indices.push_back(4);
+        m_Indices.push_back(3);
+        m_Indices.push_back(1);
+        m_Indices.push_back(3);
+        m_Indices.push_back(4);
+        m_Indices.push_back(4);
+        m_Indices.push_back(7);
+        m_Indices.push_back(1);
+        m_Indices.push_back(5);
+        m_Indices.push_back(4); 
+        m_Indices.push_back(7);
+        m_Indices.push_back(5);
+        m_Indices.push_back(6);
+        m_Indices.push_back(7);
+        m_Indices.push_back(5);
+        m_Indices.push_back(2);
+        m_Indices.push_back(0);
+        m_Indices.push_back(5);
+        m_Indices.push_back(6);
+        m_Indices.push_back(0); 
+        m_Indices.push_back(0);
+        m_Indices.push_back(6);
+        m_Indices.push_back(1);
+        m_Indices.push_back(6);
+        m_Indices.push_back(1);
+        m_Indices.push_back(7);       
 
-        m_Indices[3] =  3;
-        m_Indices[4] =  1;
-        m_Indices[5] =  2;
-
-        m_Indices[6] =  2;
-        m_Indices[7] =  3;
-        m_Indices[8] =  5;
-
-        m_Indices[9] =  5;
-        m_Indices[10] = 4;
-        m_Indices[11] = 3;
-
-        m_Indices[12] = 1;
-        m_Indices[13] = 3;
-        m_Indices[14] = 4;
-
-        m_Indices[15] = 4;
-        m_Indices[16] = 7;
-        m_Indices[17] = 1;
-
-        m_Indices[18] = 5;
-        m_Indices[19] = 4; 
-        m_Indices[20] = 7;
-
-        m_Indices[21] = 5;
-        m_Indices[22] = 6;
-        m_Indices[23] = 7;
-
-        m_Indices[24] = 5;
-        m_Indices[25] = 2;
-        m_Indices[26] = 0;
-
-        m_Indices[27] = 5;
-        m_Indices[28] = 6;
-        m_Indices[29] = 0; 
-
-        m_Indices[30] = 0;
-        m_Indices[31] = 6;
-        m_Indices[32] = 1;
-
-        m_Indices[33] = 6;
-        m_Indices[34] = 1;
-        m_Indices[35] = 7;       
-
-        m_Shader = std::make_unique<Rendering::Shader>("Assets/3DShader");
-        m_Texture = std::make_unique<Rendering::Texture>("Assets/wall.jpg");
+        m_Shader = std::make_shared<Rendering::Shader>("Assets/3DShader");
+        m_Texture = std::make_shared<Rendering::Texture>("Assets/wall.jpg");
 
         m_Shader->Bind();
         //Set the texture to the good active texture slot
@@ -97,31 +86,7 @@ namespace Layer
 
     void TestLayer::OnStart() 
     {
-        //ALL THIS CODE WILL BE COMMENTED LATER ON THEIR DEFINITIVE CLASS
-        uint VBO;
-        glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);      
-
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &IBO); 
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Rendering::VertexLayout) * m_Vertices.size(), &m_Vertices[0], GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * INIDICE_NBR, &m_Indices[0], GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), 
-        (void*)(offsetof(Rendering::VertexLayout, Rendering::VertexLayout::color)));
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), 
-        (void*)(offsetof(Rendering::VertexLayout, Rendering::VertexLayout::UVs)));
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
     }
 
     void TestLayer::OnShutDown() 
@@ -136,9 +101,10 @@ namespace Layer
         model = glm::rotate(model, (0.0003f) * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));  
         m_Shader->SetUniformMatrix4fv("model", model);
 
-        glBindVertexArray(VAO);
-        //!!! REPLACE INDICE_NBR by indices.size() later!!!
-        glDrawElements(GL_TRIANGLES, INIDICE_NBR, GL_UNSIGNED_INT, 0);
+        m_Mesh->Draw();
+        //glBindVertexArray(VAO);
+        ////!!! REPLACE INDICE_NBR by indices.size() later!!!
+        //glDrawElements(GL_TRIANGLES, INIDICE_NBR, GL_UNSIGNED_INT, 0);
         m_Shader->Unbind();
 
     }
