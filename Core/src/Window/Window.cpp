@@ -93,6 +93,9 @@ namespace Window
         //Create the context.
         glfwMakeContextCurrent(m_Window);
 
+        //Disable Vsync
+        glfwSwapInterval(0);
+
         //Set the User Pointer of m_Window to m_Window
         glfwSetWindowUserPointer(m_Window, &m_WindowInfo);
 
