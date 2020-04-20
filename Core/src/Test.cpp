@@ -28,11 +28,27 @@ void Test::mainLoop()
     Timer t(__func__);
     tl->OnStart();
 
+    uint frame = 0;
+    float timer = 0.0f;
+
     while(Window->IsWindowClose())
     {
+        TPoint startTime = HrClock::now();
+
         Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         tl->OnRender();
         Window->onMainLoop();
+
+        TPoint endTime = HrClock::now();
+        eTime elaspeTime = endTime - startTime;
+        timer += elaspeTime.count();
+        frame++;
+        if(timer > 1.0f)
+        {
+            timer = 0.0f;
+            CORE_INFO("FPS: ", frame);
+            frame = 0;
+        }
     }
 }
 
