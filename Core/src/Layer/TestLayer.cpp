@@ -133,7 +133,7 @@ namespace Layer
     {
         m_Shader->Bind();
         m_Texture->Bind();
-        model = glm::rotate(model, (0.01f) * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));  
+        model = glm::rotate(model, (0.0003f) * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));  
         m_Shader->SetUniformMatrix4fv("model", model);
 
         glBindVertexArray(VAO);
