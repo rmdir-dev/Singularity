@@ -23,7 +23,7 @@ namespace Layer
         /*
         Execute to render the layer.
         */
-        virtual void OnRender() = 0;
+        virtual void OnRender(const float& deltaTime) = 0;
         /*
         Execute to send an event to the layer.
         */

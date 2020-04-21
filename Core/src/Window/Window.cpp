@@ -17,6 +17,8 @@ namespace Window
             CORE_CRITICAL("Failed to start the engine.\n ENGINE SHUTDOWN!");
         }
         CORE_INFO("Engine started!\n\n");
+        m_Deltatime = 0.0f;
+        m_LastFrame = 0.0f;
     }
 
     Window::~Window() 
@@ -26,6 +28,9 @@ namespace Window
 
     void Window::onMainLoop() 
     {
+        float currentFrame = glfwGetTime();
+        m_Deltatime = currentFrame - m_LastFrame;
+        m_LastFrame = currentFrame;
         //Swap the framebuffer.
         glfwSwapBuffers(m_Window);
         //Polling GLFW Event
@@ -64,6 +69,11 @@ namespace Window
         glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
     }
 
+    float Window::GetDeltaTime() 
+    {
+        return m_Deltatime;
+    }
+
     bool Window::Init() 
     {
         //Start GLFW
@@ -94,7 +104,7 @@ namespace Window
         glfwMakeContextCurrent(m_Window);
 
         //Disable Vsync
-        //glfwSwapInterval(0);
+        glfwSwapInterval(0);
 
         //Set the User Pointer of m_Window to m_Window
         glfwSetWindowUserPointer(m_Window, &m_WindowInfo);

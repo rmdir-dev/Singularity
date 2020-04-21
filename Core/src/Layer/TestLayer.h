@@ -30,25 +30,27 @@ namespace Layer
         /*
         Execute to start the layer.
         */
-        void OnStart();
+        void OnStart() override;
+
         /*
         Execute to shutdown the layer.
         */
-        void OnShutDown();
+        void OnShutDown() override;
 
         /*
         Execute to render the layer.
         */
-        void OnRender();
+        void OnRender(const float& deltaTime) override;
+
         /*
         Execute to send an event to the layer.
         */
-        void OnEvent(Event::Event& e);
+        void OnEvent(Event::Event& e) override;
 
     private:
         void UpdateView();
 
-        void UpdateMouvement();
+        void UpdateMouvement(const float& deltaTime);
 
         //EVENT MANAGEMENT
         /*

@@ -83,6 +83,11 @@ namespace Window
         */    
         void SetWindowClose(bool value);
 
+        /*
+        Return the deltatime.
+        */
+        float GetDeltaTime();
+
     private:
         /*
         GLFW Initializtion
@@ -128,5 +133,10 @@ namespace Window
         WindowInfo m_WindowInfo;
         //GLFW Window.
         GLFWwindow* m_Window;
+
+        //Deltatime
+        float m_Deltatime;
+        float m_LastFrame;
+        //Deltatime
     };
 }

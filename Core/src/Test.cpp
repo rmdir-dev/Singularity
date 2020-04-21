@@ -3,6 +3,7 @@
 #include "Utils/Log.h"
 #include <iostream>
 #include "glm/glm.hpp"
+#include "Utils/KeyCodes.h"
 
 Test::Test() 
 {
@@ -36,7 +37,7 @@ void Test::mainLoop()
         TPoint startTime = HrClock::now();
 
         Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        tl->OnRender();
+        tl->OnRender(Window->GetDeltaTime());
         Window->onMainLoop();
 
         TPoint endTime = HrClock::now();
@@ -68,10 +69,8 @@ void Test::onEvent(Event::Event& e)
 }
 
 bool Test::keyPressEvent(Event::KeyPressed& e)
-{
-    CORE_INFO("EVENT TYPE ", e.toString());
-    
-    if(e.getKeyCode() == 9)
+{    
+    if(e.getKeyCode() == SE_KEY_ESCAPE)
     {
         Window->SetWindowClose(true);
         return true;

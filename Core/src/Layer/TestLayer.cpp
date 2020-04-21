@@ -55,12 +55,12 @@ namespace Layer
         
     }
 
-    void TestLayer::OnRender() 
+    void TestLayer::OnRender(const float& deltaTime) 
     {
-        UpdateMouvement();
+        UpdateMouvement(deltaTime);
         m_Shader->Bind();
         m_Texture->Bind();
-        model = glm::rotate(model, (0.05f) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));  
+        model = glm::rotate(model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));  
         m_Shader->SetUniformMatrix4fv("model", model);
 
         //m_Mesh->Draw();
@@ -80,8 +80,9 @@ namespace Layer
         m_Shader->Unbind();
     }
 
-    void TestLayer::UpdateMouvement() 
+    void TestLayer::UpdateMouvement(const float& deltaTime) 
     {
+        cameraSpeed = 2.5f * deltaTime;
         if(mvt.w)
         {
             cameraPos += cameraSpeed * cameraFront;
