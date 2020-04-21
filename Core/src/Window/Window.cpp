@@ -94,7 +94,7 @@ namespace Window
         glfwMakeContextCurrent(m_Window);
 
         //Disable Vsync
-        glfwSwapInterval(0);
+        //glfwSwapInterval(0);
 
         //Set the User Pointer of m_Window to m_Window
         glfwSetWindowUserPointer(m_Window, &m_WindowInfo);
@@ -151,18 +151,22 @@ namespace Window
         {
         case GLFW_PRESS:
         {
-            Event::KeyPressed event(scancode, 0);
+            Event::KeyPressed event(key, 0);
             info.EventCallback(event);
             break;
         }
 
         case GLFW_RELEASE:
         {
+            Event::KeyReleased event(key);
+            info.EventCallback(event);
             break;
         }
 
         case GLFW_REPEAT:
         {
+            //Event::KeyPressed event(scancode, 1);
+            //info.EventCallback(event);
             break;
         }
         }
@@ -178,7 +182,7 @@ namespace Window
 
         Event::WindowResize event(width, height);
         info.EventCallback(event);
-        
+
         //Chanege viewport size.
         glViewport(0, 0, width, height);
     }

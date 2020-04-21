@@ -10,6 +10,14 @@
 
 namespace Layer 
 {
+    struct MouvementInput
+    {
+        byte w      : 1;  // 0x1
+        byte a      : 1;  // 0x2
+        byte s      : 1;  // 0x4
+        byte d      : 1;  // 0x4
+    };
+
     class TestLayer : public Layer
     {
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -38,11 +46,20 @@ namespace Layer
         void OnEvent(Event::Event& e);
 
     private:
+        void UpdateView();
+
+        void UpdateMouvement();
+
         //EVENT MANAGEMENT
         /*
         Execute when a key event is recieved.
         */
         bool KeyPressEvent(Event::KeyPressed& e);
+
+        /*
+        Execute when a key is released.
+        */
+        bool KeyReleasedEvent(Event::KeyReleased& e);
 
         /*
         Execute when the window or framebuffer is resize.
@@ -75,6 +92,13 @@ namespace Layer
         glm::mat4 model;
         glm::mat4 view;
         glm::mat4 projection;
+
+        //TEST Camera
+        glm::vec3 cameraPos;
+        glm::vec3 cameraFront;
+        glm::vec3 cameraUp;
+        float cameraSpeed;
+        MouvementInput mvt;
 
         //Rotation base
         float rotation;
