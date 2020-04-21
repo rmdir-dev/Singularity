@@ -18,6 +18,11 @@ namespace Layer
         cameraFront     = glm::vec3(0.0f, 0.0f, -1.0f);
         cameraUp        = glm::vec3(0.0f, 1.0f,  0.0f);
         cameraSpeed = 0.05f;
+        sensitivity = 0.1f;
+        m_Yaw = -84.0f;
+        m_Pitch = 0.0f;
+
+        mvt.input = 0x00;
 
         UpdateView(); 
 
@@ -27,8 +32,9 @@ namespace Layer
 
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
+        //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
-        projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 250.0f);
+        projection = glm::perspective(glm::radians(45.0f), 1900.0f / 1000.0f, 0.1f, 250.0f);
 
         m_Shader->SetUniformMatrix4fv("model", model);
         m_Shader->SetUniformMatrix4fv("projection", projection);
@@ -46,7 +52,7 @@ namespace Layer
 
     void TestLayer::OnStart() 
     {
-        m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
+        //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
         m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
     }
 
@@ -83,21 +89,29 @@ namespace Layer
     void TestLayer::UpdateMouvement(const float& deltaTime) 
     {
         cameraSpeed = 2.5f * deltaTime;
-        if(mvt.w)
+        if(mvt.bits.w)
         {
             cameraPos += cameraSpeed * cameraFront;
         }
-        if(mvt.s)
+        if(mvt.bits.s)
         {
             cameraPos -= cameraSpeed * cameraFront;
         }
-        if(mvt.a)
+        if(mvt.bits.a)
         {
             cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
         }
-        if(mvt.d)
+        if(mvt.bits.d)
         {
             cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        }
+        if(mvt.bits.q)
+        {
+            cameraPos -= cameraSpeed * cameraUp;
+        }
+        if(mvt.bits.e)
+        {
+            cameraPos += cameraSpeed * cameraUp;
         }
         UpdateView();
     }
@@ -107,6 +121,7 @@ namespace Layer
         Event::Dispatcher dispatcher(e);
 	    dispatcher.dispatch<Event::KeyPressed>(BIND_EVENT_FCT(TestLayer::KeyPressEvent));
 	    dispatcher.dispatch<Event::KeyReleased>(BIND_EVENT_FCT(TestLayer::KeyReleasedEvent));
+	    dispatcher.dispatch<Event::MouseMoved>(BIND_EVENT_FCT(TestLayer::MouseMovedEvent));
 	    dispatcher.dispatch<Event::WindowResize>(BIND_EVENT_FCT(TestLayer::WindowResizeEvent));
     }
 
@@ -115,19 +130,27 @@ namespace Layer
         switch (e.getKeyCode())
         {
         case SE_KEY_W:
-            mvt.w = 1;
+            mvt.bits.w = 1;
             break;
         
         case SE_KEY_S:
-            mvt.s = 1;
+            mvt.bits.s = 1;
             break;
 
         case SE_KEY_A:
-            mvt.a = 1;
+            mvt.bits.a = 1;
             break;
 
         case SE_KEY_D:
-            mvt.d = 1;
+            mvt.bits.d = 1;
+            break;
+
+        case SE_KEY_Q:
+            mvt.bits.q = 1;
+            break;
+
+        case SE_KEY_E:
+            mvt.bits.e = 1;
             break;
 
         default:
@@ -140,24 +163,49 @@ namespace Layer
         switch (e.getKeyCode())
         {
         case SE_KEY_W:
-            mvt.w = 0;
+            mvt.bits.w = 0;
             break;
         
         case SE_KEY_S:
-            mvt.s = 0;
+            mvt.bits.s = 0;
             break;
 
         case SE_KEY_A:
-            mvt.a = 0;
+            mvt.bits.a = 0;
             break;
 
         case SE_KEY_D:
-            mvt.d = 0;
+            mvt.bits.d = 0;
+            break;
+
+        case SE_KEY_Q:
+            mvt.bits.q = 0;
+            break;
+
+        case SE_KEY_E:
+            mvt.bits.e = 0;
             break;
 
         default:
             break;
         }
+    }
+
+    bool TestLayer::MouseMovedEvent(Event::MouseMoved& e) 
+    {
+        m_Yaw += e.GetMousePosition().x * sensitivity;
+        m_Pitch -= e.GetMousePosition().y * sensitivity;
+
+        if(m_Pitch > 89.0f)
+            m_Pitch =  89.0f;
+        if(m_Pitch < -89.0f)
+            m_Pitch = -89.0f;
+
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+        direction.y = sin(glm::radians(m_Pitch));
+        direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+        cameraFront = glm::normalize(direction);
     }
 
     bool TestLayer::WindowResizeEvent(Event::WindowResize& e) 

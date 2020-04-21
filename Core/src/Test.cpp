@@ -19,7 +19,7 @@ Test::~Test()
 
 void Test::windowInitTest()
 {
-    Window = std::make_unique<Window::Window>("Test window", 1280, 720);
+    Window = std::make_unique<Window::Window>("Test window", 1900, 1000);
     Window->SetEventCallback(BIND_EVENT_FCT(Test::onEvent));
     tl = std::make_unique<Layer::TestLayer>();
 }

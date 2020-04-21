@@ -10,13 +10,20 @@
 
 namespace Layer 
 {
-    struct MouvementInput
+    union MouvementInput
     {
-        byte w      : 1;  // 0x1
-        byte a      : 1;  // 0x2
-        byte s      : 1;  // 0x4
-        byte d      : 1;  // 0x4
-    };
+        byte input;
+        struct
+        {
+            byte w      : 1;  // 0x01
+            byte a      : 1;  // 0x02
+            byte s      : 1;  // 0x04
+            byte d      : 1;  // 0x08
+            byte q      : 1;  // 0x10
+            byte e      : 1;  // 0x20
+        }bits;
+    };        
+    
 
     class TestLayer : public Layer
     {
@@ -64,6 +71,11 @@ namespace Layer
         bool KeyReleasedEvent(Event::KeyReleased& e);
 
         /*
+        Execute when the mouse is moved.
+        */
+        bool MouseMovedEvent(Event::MouseMoved& e);
+
+        /*
         Execute when the window or framebuffer is resize.
         */
         bool WindowResizeEvent(Event::WindowResize& e);
@@ -101,6 +113,10 @@ namespace Layer
         glm::vec3 cameraUp;
         float cameraSpeed;
         MouvementInput mvt;
+
+        float m_Yaw;
+        float m_Pitch;
+        float sensitivity;
 
         //Rotation base
         float rotation;

@@ -7,6 +7,9 @@
 
 namespace Window
 {
+    double Window::s_LastX = 0.0f;
+    double Window::s_LastY = 0.0f;
+    bool Window::s_FirstMouseInput = true;
 
     Window::Window(const char* name, uint width, uint height)
     {   
@@ -19,6 +22,8 @@ namespace Window
         CORE_INFO("Engine started!\n\n");
         m_Deltatime = 0.0f;
         m_LastFrame = 0.0f;
+        s_LastX = width / 2;
+        s_LastY = height / 2;
     }
 
     Window::~Window() 
@@ -109,12 +114,17 @@ namespace Window
         //Set the User Pointer of m_Window to m_Window
         glfwSetWindowUserPointer(m_Window, &m_WindowInfo);
 
+        //Disable the mouse cursor and lock it to the window.
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //          CALLBACKS
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         //Set the Key callback.
         glfwSetKeyCallback(m_Window, KeyPressCallback);
+        //Set mouse callback.
+        glfwSetCursorPosCallback(m_Window, MouseMovedCallback);
         //Set framebuffer resize callback
         glfwSetFramebufferSizeCallback(m_Window, FramebufferSizeCallback);
         
@@ -182,6 +192,24 @@ namespace Window
         }
     }
 
+
+    void Window::MouseMovedCallback(GLFWwindow* window, double xpos, double ypos) 
+    {
+        if(s_FirstMouseInput)
+        {
+            s_LastX = xpos;
+            s_LastY = ypos;
+            s_FirstMouseInput = false;
+        }
+        WindowInfo& info = *(WindowInfo*)glfwGetWindowUserPointer(window);
+        float xOffset = xpos - s_LastX;
+        float YOffset = ypos - s_LastY;
+        s_LastX = xpos;
+        s_LastY = ypos;
+
+        Event::MouseMoved event(xOffset, YOffset);
+        info.EventCallback(event);
+    }
 
     void Window::FramebufferSizeCallback(GLFWwindow* window, int width, int height) 
     {

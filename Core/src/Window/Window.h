@@ -109,6 +109,10 @@ namespace Window
         static void KeyPressCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
         //MOUSE
+        /*
+        Callback when the mouse is moved.
+        */
+        static void MouseMovedCallback(GLFWwindow* window, double xpos, double ypos);
 
         //WINDOW
 
@@ -136,7 +140,13 @@ namespace Window
 
         //Deltatime
         float m_Deltatime;
-        float m_LastFrame;
         //Deltatime
+        float m_LastFrame;
+
+        //MOUSE POSITION X
+        static double s_LastX;
+        //MOUSE POSITION Y
+        static double s_LastY;
+        static bool s_FirstMouseInput;
     };
 }
