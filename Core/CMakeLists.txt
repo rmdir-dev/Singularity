@@ -13,7 +13,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(dep/libs/glfw)
 add_subdirectory(dep/libs/imgui)
-add_subdirectory(dep/libs/assimp)
+add_subdirectory(dep/libs/assimp2)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
