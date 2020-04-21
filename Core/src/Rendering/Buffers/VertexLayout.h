@@ -28,6 +28,11 @@ namespace Rendering
         */
         glm::vec2 UVs;
         
-        //glm::vec3 normals;
+        /*
+        Normal coordinates X Y Z
+        Type FLOAT
+        Size 3 floats | glm::vec3
+        */
+        glm::vec3 normals;
     };
 }
