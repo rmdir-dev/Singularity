@@ -20,9 +20,14 @@ namespace Rendering
 
         int width, height, nrChannels;
         byte* data = stbi_load(filePath, &width, &height, &nrChannels, 0);
+
+        int internalFormat = nrChannels == 4 ? GL_RGBA : GL_RGB;
+		uint format = nrChannels == 4 ? GL_RGBA : GL_RGB;
+
         if(data)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            if(nrChannels)
+            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         } else 
         {
