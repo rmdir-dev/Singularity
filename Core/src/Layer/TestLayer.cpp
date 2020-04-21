@@ -65,7 +65,8 @@ namespace Layer
         
 
         model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); 
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
         view = glm::mat4(1.0f);
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f)); 
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 250.0f);
@@ -87,6 +88,7 @@ namespace Layer
     void TestLayer::OnStart() 
     {
         m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
+        m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
     }
 
     void TestLayer::OnShutDown() 
@@ -98,10 +100,11 @@ namespace Layer
     {
         m_Shader->Bind();
         m_Texture->Bind();
-        model = glm::rotate(model, (0.0003f) * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));  
+        model = glm::rotate(model, (0.0003f) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));  
         m_Shader->SetUniformMatrix4fv("model", model);
 
-        m_Mesh->Draw();
+        //m_Mesh->Draw();
+        m_Model->Draw();
         //glBindVertexArray(VAO);
         ////!!! REPLACE INDICE_NBR by indices.size() later!!!
         //glDrawElements(GL_TRIANGLES, INIDICE_NBR, GL_UNSIGNED_INT, 0);
