@@ -175,6 +175,10 @@ namespace Window
         WindowInfo& info = *(WindowInfo*)glfwGetWindowUserPointer(window);
         info.Width = width;
         info.Height = height;
+
+        Event::WindowResize event(width, height);
+        info.EventCallback(event);
+        
         //Chanege viewport size.
         glViewport(0, 0, width, height);
     }

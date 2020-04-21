@@ -42,7 +42,12 @@ namespace Layer
         /*
         Execute when a key event is recieved.
         */
-        bool keyPressEvent(Event::KeyPressed& e);
+        bool KeyPressEvent(Event::KeyPressed& e);
+
+        /*
+        Execute when the window or framebuffer is resize.
+        */
+        bool WindowResizeEvent(Event::WindowResize& e);
         
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
