@@ -7,6 +7,7 @@ namespace Rendering
     Model::Model(const char* filePath, std::shared_ptr<Shader> Shader) 
         : m_Path(filePath), m_Shader(Shader)
     {
+        CORE_INFO("Loading model: ", filePath);
         Load();
     }
 
@@ -34,6 +35,7 @@ namespace Rendering
             return;
         }
         ProcessNode(scene->mRootNode, scene);
+        CORE_INFO("Model loaded.");
     }
 
     void Model::ProcessNode(aiNode* node, const aiScene* scene) 
@@ -103,14 +105,14 @@ namespace Rendering
 
         if (scene->mNumMaterials > 0)
         {
-            std::string path = "Assets/Nano/";
+            std::string path = m_Path.substr(0, m_Path.find_last_of('/'));
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
             aiString strDiff;
              if (material->GetTexture(aiTextureType_DIFFUSE, 0, &strDiff, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
                 if (strDiff.C_Str() != "")
                 {
-                    path = path + strDiff.C_Str();
+                    path = path + '/' + strDiff.C_Str();
                     Textures = std::make_shared<Texture>(path.c_str());
                 }
              }

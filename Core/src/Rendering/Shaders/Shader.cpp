@@ -8,6 +8,7 @@ namespace Rendering
 {
     Shader::Shader(const char* filePath) 
     {
+        CORE_INFO("Loading Shaders: ", filePath);
         auto [vs, fs] = ParseShader(filePath);
         ID = CreateShader(vs, fs);
     }
@@ -87,6 +88,8 @@ namespace Rendering
         //Delete the "intermediate shader files"
         glDeleteShader(vs);
         glDeleteShader(fs);
+
+        CORE_INFO("Shader loaded.");
 
         return program;
     }

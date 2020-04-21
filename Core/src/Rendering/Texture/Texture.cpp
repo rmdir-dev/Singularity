@@ -10,6 +10,7 @@ namespace Rendering
     Texture::Texture(const char* filePath, uint channel)
         : channel(channel)
     {
+        CORE_INFO("Loading texture: ", filePath);
         glGenTextures(1, &TextureID);
         glBindTexture(GL_TEXTURE_2D, TextureID);
 
@@ -32,8 +33,11 @@ namespace Rendering
         } else 
         {
             CORE_INFO("Fail to load texture: ", filePath);
+
+            return;
         }
         stbi_image_free(data);
+        CORE_INFO("Texture loaded.");
     }
 
     Texture::~Texture() 
