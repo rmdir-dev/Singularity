@@ -257,9 +257,9 @@ namespace Window
 
     void Window::OpenGLErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* data) 
     {
-        char* _source;
-        char* _type;
-        char* _severity;
+        const char* _source;
+        const char* _type;
+        const char* _severity;
 
         switch (source)
         {

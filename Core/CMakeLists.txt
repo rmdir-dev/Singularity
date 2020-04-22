@@ -32,6 +32,10 @@ add_definitions(-DCORE_LOG_LEVEL=0 -DGLEW_STATIC)
 
 link_directories(${CMAKE_SOURCE_DIR}/dep/libs/glew/GLEW-lib)
 
+#-save-temps to generate assembly
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++17 -Wall -pedantic-errors")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++17 -Wall -pedantic-errors")
+
 add_library(Core ${ehSRC})
 
 target_include_directories(Core 

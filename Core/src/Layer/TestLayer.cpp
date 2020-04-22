@@ -161,6 +161,7 @@ namespace Layer
         default:
             break;
         }
+        return true;
     }
 
     bool TestLayer::KeyReleasedEvent(Event::KeyReleased& e) 
@@ -194,6 +195,7 @@ namespace Layer
         default:
             break;
         }
+        return true;
     }
 
     bool TestLayer::MouseMovedEvent(Event::MouseMoved& e) 
@@ -211,6 +213,8 @@ namespace Layer
         direction.y = sin(glm::radians(m_Pitch));
         direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
         cameraFront = glm::normalize(direction);
+
+        return true;
     }
 
     bool TestLayer::WindowResizeEvent(Event::WindowResize& e) 
@@ -220,5 +224,7 @@ namespace Layer
         projection = glm::perspective(glm::radians(45.0f), size.width / size.height, 0.1f, 250.0f);
         m_Shader->SetUniformMatrix4fv("projection", projection);
         m_Shader->Unbind();
+
+        return true;
     }
 }
