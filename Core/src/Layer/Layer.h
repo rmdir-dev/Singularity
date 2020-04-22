@@ -24,10 +24,16 @@ namespace Layer
         Execute to render the layer.
         */
         virtual void OnRender(const float& deltaTime) = 0;
+
         /*
         Execute to send an event to the layer.
         */
         virtual void OnEvent(Event::Event& e) = 0;
+
+        /*
+        Execute on ImGUI layer 
+        */
+        virtual void OnImGUIRender() = 0;
 
     private:
 

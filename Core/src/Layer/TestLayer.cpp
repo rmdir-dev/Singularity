@@ -125,6 +125,11 @@ namespace Layer
 	    dispatcher.dispatch<Event::WindowResize>(BIND_EVENT_FCT(TestLayer::WindowResizeEvent));
     }
 
+    void TestLayer::OnImGUIRender() 
+    {
+        
+    }
+    
     bool TestLayer::KeyPressEvent(Event::KeyPressed& e) 
     {
         switch (e.getKeyCode())

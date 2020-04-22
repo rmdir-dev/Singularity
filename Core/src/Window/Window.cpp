@@ -79,6 +79,11 @@ namespace Window
         return m_Deltatime;
     }
 
+    GLFWwindow* Window::GetWindow() 
+    {
+        return m_Window;
+    }
+
     bool Window::Init() 
     {
         //Start GLFW
@@ -116,6 +121,7 @@ namespace Window
 
         //Disable the mouse cursor and lock it to the window.
         glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        m_WindowInfo.mouseCapture = true;
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //          CALLBACKS
@@ -173,6 +179,19 @@ namespace Window
         {
             Event::KeyPressed event(key, 0);
             info.EventCallback(event);
+            if(key == GLFW_KEY_LEFT_ALT)
+            {
+                if(!info.mouseCapture)
+                {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                    info.mouseCapture = true;
+                } else 
+                {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                    info.mouseCapture = false;
+                    s_FirstMouseInput = true;
+                }                    
+            }
             break;
         }
 
@@ -195,20 +214,26 @@ namespace Window
 
     void Window::MouseMovedCallback(GLFWwindow* window, double xpos, double ypos) 
     {
-        if(s_FirstMouseInput)
-        {
+        WindowInfo& info = *(WindowInfo*)glfwGetWindowUserPointer(window);
+
+        if(info.mouseCapture)
+        {   
+             if(s_FirstMouseInput)
+            {
+                s_LastX = xpos;
+                s_LastY = ypos;
+                s_FirstMouseInput = false;
+            }
+            
+            float xOffset = xpos - s_LastX;
+            float YOffset = ypos - s_LastY;
             s_LastX = xpos;
             s_LastY = ypos;
-            s_FirstMouseInput = false;
-        }
-        WindowInfo& info = *(WindowInfo*)glfwGetWindowUserPointer(window);
-        float xOffset = xpos - s_LastX;
-        float YOffset = ypos - s_LastY;
-        s_LastX = xpos;
-        s_LastY = ypos;
 
-        Event::MouseMoved event(xOffset, YOffset);
-        info.EventCallback(event);
+            Event::MouseMoved event(xOffset, YOffset);
+            info.EventCallback(event);
+        }
+       
     }
 
     void Window::FramebufferSizeCallback(GLFWwindow* window, int width, int height) 

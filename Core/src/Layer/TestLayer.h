@@ -54,6 +54,11 @@ namespace Layer
         */
         void OnEvent(Event::Event& e) override;
 
+        /*
+        Execute on ImGUI layer 
+        */
+        void OnImGUIRender() override;
+
     private:
         void UpdateView();
 

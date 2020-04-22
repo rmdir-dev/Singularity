@@ -24,6 +24,7 @@ namespace Window
         uint Height, Width;
         bool Vsync, Closed;
         EventCallbackFct EventCallback;
+        bool mouseCapture;
 
         /*
         Constructor for WindowInfo.
@@ -38,7 +39,7 @@ namespace Window
                     uint width = 1280,
                     uint height = 720,
                     bool vsync = true)
-            : Title(title), Height(height), Width(width), Vsync(vsync), Closed(false)           
+            : Title(title), Height(height), Width(width), Vsync(vsync), Closed(false)          
         {}
     };
 
@@ -87,6 +88,11 @@ namespace Window
         Return the deltatime.
         */
         float GetDeltaTime();
+
+        /*
+        Get the window
+        */
+        GLFWwindow* GetWindow();
 
     private:
         /*
@@ -148,5 +154,7 @@ namespace Window
         //MOUSE POSITION Y
         static double s_LastY;
         static bool s_FirstMouseInput;
+
+        bool m_MouseCapture;
     };
 }

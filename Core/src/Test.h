@@ -15,6 +15,12 @@ struct Test{
 
     void destroy();
 
+    void ImGUISetup();
+
+    void ImGUIRenderBeging();
+
+    void ImGUIRenderEnd();
+
     void onEvent(Event::Event& e); 
 
     bool keyPressEvent(Event::KeyPressed& e); 
