@@ -12,7 +12,7 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(dep/libs/glfw)
-add_subdirectory(dep/libs/imgui)
+#add_subdirectory(dep/libs/imgui)
 add_subdirectory(dep/libs/assimp2)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -39,7 +39,7 @@ target_include_directories(Core
     PUBLIC dep/includes)
 
 target_link_libraries(Core glfw)
-target_link_libraries(Core ImGUI)
+#target_link_libraries(Core ImGUI)
 target_link_libraries(Core assimp)
 
 find_package(OpenGL REQUIRED)
