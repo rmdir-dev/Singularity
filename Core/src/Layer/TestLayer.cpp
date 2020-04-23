@@ -15,6 +15,10 @@ namespace Layer
         m_Light = std::make_shared<Rendering::Lights>(glm::vec3(1.0f, 1.5f, 2.0f));
         m_Light->SetShader(m_LightShader);
         m_Light->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
+        m_Light->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_Light->m_Ambiant = glm::vec3(0.2f)    * m_Light->m_Color;
+        m_Light->m_Diffuse = glm::vec3(0.5f)    * m_Light->m_Color;
+        m_Light->m_Specular = glm::vec3(1.0f)   * m_Light->m_Color;
 
         //CAMERA SETUP
         cameraPos       = glm::vec3(0.0f, 0.15f,  5.0f);
@@ -59,6 +63,14 @@ namespace Layer
     {
         //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
         m_Model = std::make_unique<Rendering::Model>("Assets/sphere.obj", m_Shader);
+        m_Shader->Bind();
+        m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
+        m_Shader->SetUniform3f("diffuseLight.color", m_Light->m_Color);
+        m_Shader->SetUniform3f("diffuseLight.ambient", m_Light->m_Ambiant);
+        m_Shader->SetUniform3f("diffuseLight.diffuse", m_Light->m_Diffuse);
+        m_Shader->SetUniform3f("diffuseLight.specular", m_Light->m_Specular);
+        //m_Shader->SetUniform1f("diffuseLight.intensity", m_Light->m_Intensity);
+        m_Shader->Unbind();
     }
 
     void TestLayer::OnShutDown() 
@@ -88,6 +100,7 @@ namespace Layer
         m_Shader->Bind();
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         m_Shader->SetUniformMatrix4fv("view", view);
+        m_Shader->SetUniform3f("cameraPos", cameraPos);
         m_Shader->Unbind();
 
         m_LightShader->Bind();

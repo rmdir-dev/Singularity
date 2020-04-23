@@ -71,11 +71,14 @@ namespace Rendering
         //        VARIABLES
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
-    protected:
         glm::vec3 m_Position;
         glm::vec3 m_Color;
         float m_Intensity;
+        glm::vec3 m_Ambiant;
+        glm::vec3 m_Diffuse;
+        glm::vec3 m_Specular;
 
+    protected:
         LightSettings m_Settings;
         LightTypes m_Type;
 
