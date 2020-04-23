@@ -1,10 +1,7 @@
 #pragma once
 
 #include "Layer.h"
-#include "Rendering/Shaders/Shader.h"
-#include "Rendering/Buffers/VertexLayout.h"
-#include "Rendering/Texture/Texture.h"
-#include "Rendering/Models/Model.h"
+#include "Rendering/Rendering.h"
 
 #define INIDICE_NBR 36
 
@@ -103,9 +100,13 @@ namespace Layer
 
         //Test shader.
         std::shared_ptr<Rendering::Shader> m_Shader;
+        std::shared_ptr<Rendering::Shader> m_LightShader;
 
         //Test Texture
         std::shared_ptr<Rendering::Texture> m_Texture;
+
+        //Test Light
+        std::shared_ptr<Rendering::Lights> m_Light;
 
         //TEST MVP matrix
         glm::mat4 model;

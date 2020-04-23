@@ -10,11 +10,14 @@ namespace Layer
 {
     TestLayer::TestLayer() 
     {
-        m_Shader = std::make_shared<Rendering::Shader>("Assets/3DShader");
-        m_Texture = std::make_shared<Rendering::Texture>("Assets/wall.jpg");
+        m_Shader = std::make_shared<Rendering::Shader>("Assets/Basic3DShaderLight");
+        m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
+        m_Light = std::make_shared<Rendering::Lights>(glm::vec3(1.0f, 1.5f, 2.0f));
+        m_Light->SetShader(m_LightShader);
+        m_Light->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
 
         //CAMERA SETUP
-        cameraPos       = glm::vec3(0.0f, 0.0f,  3.0f);
+        cameraPos       = glm::vec3(0.0f, 0.15f,  5.0f);
         cameraFront     = glm::vec3(0.0f, 0.0f, -1.0f);
         cameraUp        = glm::vec3(0.0f, 1.0f,  0.0f);
         cameraSpeed = 0.05f;
@@ -26,20 +29,22 @@ namespace Layer
 
         UpdateView(); 
 
-        m_Shader->Bind();
-        //Set the texture to the good active texture slot
-        m_Shader->SetUniform1i("texture0", 0);        
+        m_Shader->Bind();       
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-        //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
-        projection = glm::perspective(glm::radians(45.0f), 1900.0f / 1000.0f, 0.1f, 250.0f);
+        //model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
+        //model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
+        projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 250.0f);
 
         m_Shader->SetUniformMatrix4fv("model", model);
         m_Shader->SetUniformMatrix4fv("projection", projection);
 
-        m_Shader->Unbind();         
+        m_Shader->Unbind();
+
+        m_LightShader->Bind();
+        m_LightShader->SetUniformMatrix4fv("projection", projection);
+        m_LightShader->SetUniform3f("inColor", glm::vec3(1.0f));
+        m_LightShader->Unbind();       
 
         rotation = 0.0f;
     }
@@ -53,7 +58,7 @@ namespace Layer
     void TestLayer::OnStart() 
     {
         //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
-        m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
+        m_Model = std::make_unique<Rendering::Model>("Assets/sphere.obj", m_Shader);
     }
 
     void TestLayer::OnShutDown() 
@@ -65,7 +70,6 @@ namespace Layer
     {
         UpdateMouvement(deltaTime);
         m_Shader->Bind();
-        m_Texture->Bind();
         model = glm::rotate(model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));  
         m_Shader->SetUniformMatrix4fv("model", model);
 
@@ -75,6 +79,7 @@ namespace Layer
         ////!!! REPLACE INDICE_NBR by indices.size() later!!!
         //glDrawElements(GL_TRIANGLES, INIDICE_NBR, GL_UNSIGNED_INT, 0);
         m_Shader->Unbind();
+        m_Light->Draw();
 
     }
 
@@ -84,6 +89,10 @@ namespace Layer
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         m_Shader->SetUniformMatrix4fv("view", view);
         m_Shader->Unbind();
+
+        m_LightShader->Bind();
+        m_LightShader->SetUniformMatrix4fv("view", view);
+        m_LightShader->Unbind();
     }
 
     void TestLayer::UpdateMouvement(const float& deltaTime) 
@@ -224,6 +233,10 @@ namespace Layer
         projection = glm::perspective(glm::radians(45.0f), size.width / size.height, 0.1f, 250.0f);
         m_Shader->SetUniformMatrix4fv("projection", projection);
         m_Shader->Unbind();
+
+        m_LightShader->Bind();
+        m_LightShader->SetUniformMatrix4fv("projection", projection);
+        m_LightShader->Unbind();
 
         return true;
     }
