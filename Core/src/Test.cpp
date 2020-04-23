@@ -26,7 +26,7 @@ Test::~Test()
 
 void Test::windowInitTest()
 {
-    Window = std::make_unique<Window::Window>("Test window", 1900, 1000);
+    Window = std::make_unique<Window::Window>("Test window", 1280, 720);
     Window->SetEventCallback(BIND_EVENT_FCT(Test::onEvent));
     tl = std::make_unique<Layer::TestLayer>();
     ImGUISetup();
@@ -108,8 +108,7 @@ void Test::ImGUIRenderBeging()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     bool demo = true;
-    ImGui::Begin("Test");
-    ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+    ImGui::Begin("Debug Window");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }
 

@@ -28,7 +28,7 @@ namespace Window
 
     Window::~Window() 
     {
-        
+        delete m_Window;
     }
 
     void Window::onMainLoop() 
@@ -120,8 +120,8 @@ namespace Window
         glfwSetWindowUserPointer(m_Window, &m_WindowInfo);
 
         //Disable the mouse cursor and lock it to the window.
-        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        m_WindowInfo.mouseCapture = true;
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        m_WindowInfo.mouseCapture = false;
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //          CALLBACKS
