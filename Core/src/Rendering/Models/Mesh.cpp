@@ -27,10 +27,10 @@ namespace Rendering
             m_Textures->Bind();
         }        
 
-        m_Shader->SetUniform4f("material.ambient", m_Material.ambient);
-        //m_Shader->SetUniform4f("material.diffuse", m_Material.diffuse);
-        //m_Shader->SetUniform4f("material.specular", m_Material.specular);
-        //m_Shader->SetUniform1f("material.shininess", m_Material.shininess);
+        m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
+        m_Shader->SetUniform3f("material.diffuse", m_Material.diffuse);
+        m_Shader->SetUniform3f("material.specular", m_Material.specular);
+        m_Shader->SetUniform1f("material.shininess", m_Material.shininess);
         //m_Shader->SetUniform1f("material.opacity", m_Material.opacity);
 
         glBindVertexArray(VAO);
