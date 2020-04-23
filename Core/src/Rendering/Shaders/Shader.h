@@ -28,7 +28,11 @@ namespace Rendering
         void SetUniform1i(const char* name, int value);
 
         //FLOAT
+        void SetUniform1f(const char* name, float v1);
         void SetUniform3f(const char* name, float v1, float v2, float v3);
+        void SetUniform3f(const char* name, const glm::vec3& values);
+        void SetUniform4f(const char* name, float v1, float v2, float v3, float v4);
+        void SetUniform4f(const char* name, const glm::vec4& values);
 
         //MATRIX
         void SetUniformMatrix4fv(const char* name, const glm::mat4& value);

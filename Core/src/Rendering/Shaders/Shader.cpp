@@ -114,10 +114,31 @@ namespace Rendering
         glUniform1i(GetUniformLocation(name), value);
     }
 
+    void Shader::SetUniform1f(const char* name, float v1) 
+    {
+        glUniform1f(GetUniformLocation(name), v1);
+    }
+
     void Shader::SetUniform3f(const char* name, float v1, float v2, float v3) 
     {
         glUniform3f(GetUniformLocation(name), v1, v2, v3);
     }
+
+    void Shader::SetUniform3f(const char* name, const glm::vec3& values) 
+    {
+        glUniform3f(GetUniformLocation(name), values.r, values.g, values.b);
+    }
+
+    void Shader::SetUniform4f(const char* name, float v1, float v2, float v3, float v4) 
+    {
+        glUniform4f(GetUniformLocation(name), v1, v2, v3, v4);
+    }
+
+
+    void Shader::SetUniform4f(const char* name, const glm::vec4& values) 
+    {
+        glUniform4f(GetUniformLocation(name), values.r, values.g, values.b, values.a);
+    }   
 
     void Shader::SetUniformMatrix4fv(const char* name, const glm::mat4& value) 
     {
