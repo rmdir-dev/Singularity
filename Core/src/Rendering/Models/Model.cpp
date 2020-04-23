@@ -1,5 +1,7 @@
 #include "Model.h"
 #include "Utils/Log.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 namespace Rendering
@@ -103,13 +105,26 @@ namespace Rendering
             }
         }
 
+        bool hasTexture = false;
+        Material outMaterial;
+
         if (scene->mNumMaterials > 0)
         {
             std::string path = m_Path.substr(0, m_Path.find_last_of('/'));
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+            aiColor4D color;
+            material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+            outMaterial.ambient = glm::make_vec4(&color.r) + glm::vec4(0.1f);
+            material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+            outMaterial.diffuse = glm::make_vec4(&color.r);
+            material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+            outMaterial.specular = glm::make_vec4(&color.r);
+            material->Get(AI_MATKEY_OPACITY, outMaterial.opacity);
+            material->Get(AI_MATKEY_SHININESS, outMaterial.shininess);
 
             aiString strDiff;
              if (material->GetTexture(aiTextureType_DIFFUSE, 0, &strDiff, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+                hasTexture = true;
                 if (strDiff.C_Str() != "")
                 {
                     path = path + '/' + strDiff.C_Str();
@@ -118,7 +133,7 @@ namespace Rendering
              }
         }
 
-        return Mesh(vertices, indices, Textures, m_Shader);
+        return Mesh(vertices, indices, Textures, m_Shader, outMaterial, hasTexture);
     }
 }
 

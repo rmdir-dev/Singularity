@@ -6,8 +6,10 @@ namespace Rendering
     Mesh::Mesh(const std::vector<Rendering::VertexLayout>& vertices, 
                 const std::vector<uint>& indices, 
                 std::shared_ptr<Rendering::Texture> textures,
-                std::shared_ptr<Rendering::Shader> shader) 
-        : m_Vertices(vertices), m_Indices(indices), m_Textures(textures), m_Shader(shader)
+                std::shared_ptr<Rendering::Shader> shader,
+                Material material,
+                bool hasTexture) 
+        : m_Vertices(vertices), m_Indices(indices), m_Textures(textures), m_Shader(shader), m_Material(material), b_HasTexture(hasTexture)
     {
         SetupMesh();
     }
@@ -20,7 +22,16 @@ namespace Rendering
     void Mesh::Draw() 
     {
         m_Shader->Bind();
-        m_Textures->Bind();
+        if(b_HasTexture)
+        {
+            m_Textures->Bind();
+        }        
+
+        m_Shader->SetUniform4f("material.ambient", m_Material.ambient);
+        //m_Shader->SetUniform4f("material.diffuse", m_Material.diffuse);
+        //m_Shader->SetUniform4f("material.specular", m_Material.specular);
+        //m_Shader->SetUniform1f("material.shininess", m_Material.shininess);
+        //m_Shader->SetUniform1f("material.opacity", m_Material.opacity);
 
         glBindVertexArray(VAO);
 
@@ -33,6 +44,12 @@ namespace Rendering
     void Mesh::SetNewShader(std::shared_ptr<Rendering::Shader> shader) 
     {
         m_Shader = shader;
+    }
+
+
+    void Mesh::HasTexture(const bool& hasTexture) 
+    {
+        b_HasTexture = hasTexture;
     }
 
     void Mesh::SetupMesh() 
