@@ -29,8 +29,11 @@ namespace Rendering
     public:
     private:
         std::string m_Path;
+        std::string m_Dir;
 
         std::vector<Mesh> m_Meshes;
+
+        glm::mat4 m_Model;
 
         std::shared_ptr<Shader> m_Shader;
     };

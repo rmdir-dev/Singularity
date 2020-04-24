@@ -5,11 +5,25 @@ namespace Rendering
 {
     Mesh::Mesh(const std::vector<Rendering::VertexLayout>& vertices, 
                 const std::vector<uint>& indices, 
-                std::shared_ptr<Rendering::Texture> textures,
+                std::shared_ptr<Rendering::Texture> diffuse,
+                std::shared_ptr<Rendering::Texture> specular,
+                std::shared_ptr<Rendering::Texture> normal,
                 std::shared_ptr<Rendering::Shader> shader,
                 Material material,
                 bool hasTexture) 
-        : m_Vertices(vertices), m_Indices(indices), m_Textures(textures), m_Shader(shader), m_Material(material), b_HasTexture(hasTexture)
+                : m_Vertices(vertices), m_Indices(indices), m_Diffuse(diffuse), 
+                m_Specular(specular), m_Normal(normal), m_Shader(shader), m_Material(material), b_HasTexture(hasTexture)
+    {
+        SetupMesh();
+    }
+
+    Mesh::Mesh(const std::vector<Rendering::VertexLayout>& vertices, 
+                const std::vector<uint>& indices, 
+                std::shared_ptr<Rendering::Shader> shader,
+                Material material,
+                bool hasTexture) 
+                : m_Vertices(vertices), m_Indices(indices),
+                m_Shader(shader), m_Material(material), b_HasTexture(hasTexture)
     {
         SetupMesh();
     }
@@ -24,14 +38,23 @@ namespace Rendering
         m_Shader->Bind();
         if(b_HasTexture)
         {
-            m_Textures->Bind();
-        }        
+            m_Diffuse->Bind();
+            m_Specular->Bind();
+            m_Normal->Bind();
+            m_Shader->SetUniform1i("material.diffuse", 0);
+            m_Shader->SetUniform1i("material.specular", 1);
+            m_Shader->SetUniform1i("material.normal", 2);
+        } else 
+        {
+            m_Shader->SetUniform3f("material.diffuse", m_Material.diffuse);
+            m_Shader->SetUniform3f("material.specular", m_Material.specular);
+            
+        }  
+        //m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
+        //m_Shader->SetUniform1f("material.shininess", m_Material.shininess);
+        //m_Shader->SetUniform1f("material.opacity", m_Material.opacity); 
 
-        m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
-        m_Shader->SetUniform3f("material.diffuse", m_Material.diffuse);
-        m_Shader->SetUniform3f("material.specular", m_Material.specular);
-        m_Shader->SetUniform1f("material.shininess", m_Material.shininess);
-        //m_Shader->SetUniform1f("material.opacity", m_Material.opacity);
+        
 
         glBindVertexArray(VAO);
 
@@ -96,6 +119,12 @@ namespace Rendering
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), 
         (void*)(offsetof(Rendering::VertexLayout, Rendering::VertexLayout::normals)));
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), 
+        (void*)(offsetof(Rendering::VertexLayout, Rendering::VertexLayout::tangent)));
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(Rendering::VertexLayout), 
+        (void*)(offsetof(Rendering::VertexLayout, Rendering::VertexLayout::bitangent)));
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);

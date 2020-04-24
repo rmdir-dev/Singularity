@@ -34,5 +34,20 @@ namespace Rendering
         Size 3 floats | glm::vec3
         */
         glm::vec3 normals;
+
+        /*
+        tangent coordinates X Y Z
+        Type FLOAT
+        Size 3 floats | glm::vec3
+        */
+        glm::vec3 tangent;
+
+        /*
+        bitangent coordinates X Y Z
+        Type FLOAT
+        Size 3 floats | glm::vec3
+        */
+        glm::vec3 bitangent;
+
     };
 }

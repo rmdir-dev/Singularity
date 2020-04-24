@@ -64,6 +64,8 @@ namespace Rendering
 
         void Draw();
 
+        void Translate(const glm::vec3& translation);
+
     protected:
         void SetupLightBox();
 

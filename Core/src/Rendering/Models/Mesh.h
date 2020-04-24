@@ -16,10 +16,17 @@ namespace Rendering
     public:
         Mesh(const std::vector<Rendering::VertexLayout>& vertices, 
             const std::vector<uint>& indices, 
-            std::shared_ptr<Rendering::Texture> textures,
+            std::shared_ptr<Rendering::Texture> diffuse,
+            std::shared_ptr<Rendering::Texture> specular,
+            std::shared_ptr<Rendering::Texture> normal,
             std::shared_ptr<Rendering::Shader> shader,
             Material material,
-            bool hasTexture);
+            bool hasTexture = true);
+        Mesh(const std::vector<Rendering::VertexLayout>& vertices, 
+            const std::vector<uint>& indices, 
+            std::shared_ptr<Rendering::Shader> shader,
+            Material material,
+            bool hasTexture = false);
         ~Mesh();
 
         void Draw();
@@ -41,7 +48,9 @@ namespace Rendering
         //TODO is this usefull? if not do not keep this in memory!
         std::vector<Rendering::VertexLayout> m_Vertices;
         std::vector<uint> m_Indices;
-        std::shared_ptr<Rendering::Texture> m_Textures;
+        std::shared_ptr<Rendering::Texture> m_Diffuse;
+        std::shared_ptr<Rendering::Texture> m_Specular;
+        std::shared_ptr<Rendering::Texture> m_Normal;
         std::shared_ptr<Rendering::Shader> m_Shader;
         Material m_Material;
 

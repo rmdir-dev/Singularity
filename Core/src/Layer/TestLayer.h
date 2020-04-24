@@ -130,6 +130,9 @@ namespace Layer
         //Test Vertex Array
         uint VAO, IBO;
 
+        //Mouvement
+        float sinMov;
+
     public:
     };
 }

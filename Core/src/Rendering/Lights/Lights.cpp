@@ -68,6 +68,12 @@ namespace Rendering
         }
     }
 
+    void Lights::Translate(const glm::vec3& translation) 
+    {
+        m_Position += translation;
+        m_Model = glm::translate(m_Model, translation);
+    }
+
     void Lights::SetupLightBox() 
     {
         //TODO Add Object Manager to manage the loading/unloading of different object.

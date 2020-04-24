@@ -10,9 +10,9 @@ namespace Layer
 {
     TestLayer::TestLayer() 
     {
-        m_Shader = std::make_shared<Rendering::Shader>("Assets/Basic3DShaderLight");
+        m_Shader = std::make_shared<Rendering::Shader>("Assets/3DShaderLight");
         m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
-        m_Light = std::make_shared<Rendering::Lights>(glm::vec3(1.0f, 1.5f, 2.0f));
+        m_Light = std::make_shared<Rendering::Lights>(glm::vec3(1.0f, 0.0, 2.0f));
         m_Light->SetShader(m_LightShader);
         m_Light->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
         m_Light->m_Color = glm::vec3(1.0, 1.0, 1.0);
@@ -30,14 +30,15 @@ namespace Layer
         m_Pitch = 0.0f;
 
         mvt.input = 0x00;
+        sinMov = 0.0f;
 
         UpdateView(); 
 
         m_Shader->Bind();       
 
         model = glm::mat4(1.0f);
-        //model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-        //model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
+        model = glm::translate(model, glm::vec3(0.0f, -1.4f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
         projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 250.0f);
 
         m_Shader->SetUniformMatrix4fv("model", model);
@@ -62,7 +63,7 @@ namespace Layer
     void TestLayer::OnStart() 
     {
         //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
-        m_Model = std::make_unique<Rendering::Model>("Assets/sphere.obj", m_Shader);
+        m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
         m_Shader->Bind();
         m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
         m_Shader->SetUniform3f("diffuseLight.color", m_Light->m_Color);
@@ -82,17 +83,25 @@ namespace Layer
     {
         UpdateMouvement(deltaTime);
         m_Shader->Bind();
-        model = glm::rotate(model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));  
-        m_Shader->SetUniformMatrix4fv("model", model);
+        //Light translation
+        sinMov += 0.001f;
+        m_Light->Translate(glm::vec3(0.0f, (sin(sinMov) * 5.0f)* deltaTime, 0.0f));
+        m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
+        if(sinMov == 400.0f)
+        {
+            CORE_INFO((float) (sin(sinMov)));
+            sinMov = 0.0f;
+        }
 
-        //m_Mesh->Draw();
+        //TRANSLATION        
+        //model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        //ROTATION
+        model = glm::rotate(model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        m_Shader->SetUniformMatrix4fv("model", model);
         m_Model->Draw();
-        //glBindVertexArray(VAO);
-        ////!!! REPLACE INDICE_NBR by indices.size() later!!!
-        //glDrawElements(GL_TRIANGLES, INIDICE_NBR, GL_UNSIGNED_INT, 0);
+
         m_Shader->Unbind();
         m_Light->Draw();
-
     }
 
     void TestLayer::UpdateView() 
