@@ -7,7 +7,7 @@
 
 namespace Rendering
 {
-    Texture::Texture(const char* filePath, uint channel)
+    Texture::Texture(const char* filePath, uint channel, bool sRGB)
         : channel(channel)
     {
         CORE_INFO("Loading texture: ", filePath);
@@ -24,6 +24,12 @@ namespace Rendering
 
         int internalFormat = nrChannels == 4 ? GL_RGBA : GL_RGB;
 		uint format = nrChannels == 4 ? GL_RGBA : GL_RGB;
+        if(sRGB)
+        {
+            int internalFormat = GL_SRGB_ALPHA;
+		    uint format = GL_SRGB_ALPHA;
+        }
+        
 
         if(data)
         {

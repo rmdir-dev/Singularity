@@ -26,7 +26,7 @@ namespace Rendering
     //        FUNCTIONS
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
-        Texture(const char* filePath, uint channel = 0);
+        Texture(const char* filePath, uint channel = 0, bool sRGB = false);
         ~Texture();
 
         void Bind();
