@@ -11,10 +11,13 @@ namespace Rendering
                 std::shared_ptr<Rendering::Shader> shader,
                 Material material,
                 bool hasTexture) 
-                : m_Vertices(vertices), m_Indices(indices), m_Diffuse(diffuse), 
-                m_Specular(specular), m_Normal(normal), m_Shader(shader), m_Material(material), b_HasTexture(hasTexture)
+                : m_Diffuse(diffuse), 
+                m_Specular(specular), m_Normal(normal)
     {
-        SetupMesh();
+        b_HasTexture = hasTexture;
+        m_Material = material;
+        m_Shader = shader;
+        SetupMesh(vertices, indices);
     }
 
     Mesh::Mesh(const std::vector<Rendering::VertexLayout>& vertices, 
@@ -22,10 +25,11 @@ namespace Rendering
                 std::shared_ptr<Rendering::Shader> shader,
                 Material material,
                 bool hasTexture) 
-                : m_Vertices(vertices), m_Indices(indices),
-                m_Shader(shader), m_Material(material), b_HasTexture(hasTexture)
     {
-        SetupMesh();
+        b_HasTexture = hasTexture;
+        m_Shader = shader;
+        m_Material = material;
+        SetupMesh(vertices, indices);
     }
 
     Mesh::~Mesh() 
@@ -48,17 +52,14 @@ namespace Rendering
         {
             m_Shader->SetUniform3f("material.diffuse", m_Material.diffuse);
             m_Shader->SetUniform3f("material.specular", m_Material.specular);
-            
+            m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
+            m_Shader->SetUniform1f("material.opacity", m_Material.opacity); 
         }  
-        //m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
-        //m_Shader->SetUniform1f("material.shininess", m_Material.shininess);
-        //m_Shader->SetUniform1f("material.opacity", m_Material.opacity); 
-
-        
+        m_Shader->SetUniform1f("material.shininess", m_Material.shininess);        
 
         glBindVertexArray(VAO);
 
-        glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, m_IndicesNumber, GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);
         m_Shader->Unbind();
@@ -75,8 +76,10 @@ namespace Rendering
         b_HasTexture = hasTexture;
     }
 
-    void Mesh::SetupMesh() 
+    void Mesh::SetupMesh(const std::vector<Rendering::VertexLayout>& vertices, 
+                const std::vector<uint>& indices) 
     {
+        uint  VBO, IBO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
 
@@ -86,8 +89,8 @@ namespace Rendering
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, 
-            sizeof(Rendering::VertexLayout) * m_Vertices.size(), 
-            &m_Vertices[0], 
+            sizeof(Rendering::VertexLayout) * vertices.size(), 
+            &vertices[0], 
             GL_STATIC_DRAW);
 
 
@@ -97,9 +100,11 @@ namespace Rendering
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-            sizeof(uint) * m_Indices.size(), 
-            &m_Indices[0], 
+            sizeof(uint) * indices.size(), 
+            &indices[0], 
             GL_STATIC_DRAW);
+
+        m_IndicesNumber = indices.size();
 
         //VERTEX ATTRIBUTE
 
