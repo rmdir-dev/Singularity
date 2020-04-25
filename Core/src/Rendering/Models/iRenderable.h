@@ -7,6 +7,8 @@
 #include "Rendering/Shaders/Shader.h"
 #include "Rendering/Buffers/VertexLayout.h"
 #include "Rendering/Material/Material.h"
+#include "Managers/ShaderManager.h"
+#include "Managers/TextureManager.h"
 
 namespace Rendering
 {    
@@ -17,8 +19,13 @@ namespace Rendering
         //        FUNCTIONS
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
+        iRenderable() {}
+        iRenderable(Manager::TextureManager& texMan, Manager::ShaderManager& shadMan) 
+            : m_TexMan(std::make_unique<Manager::TextureManager>(texMan)), m_ShadMan(std::make_unique<Manager::ShaderManager>(shadMan))
+        {}
         virtual ~iRenderable() {}
         virtual void Draw() = 0;
+        virtual void Draw(const glm::mat4& model) = 0;
 
     protected:
         virtual void SetupMesh(const std::vector<Rendering::VertexLayout>& vertices, 
@@ -37,5 +44,7 @@ namespace Rendering
         glm::vec4 m_Color;
         bool b_HasTexture;
         TextureType activeTextures;
+        std::unique_ptr<Manager::TextureManager> m_TexMan;
+        std::unique_ptr<Manager::ShaderManager> m_ShadMan;
     };
 }

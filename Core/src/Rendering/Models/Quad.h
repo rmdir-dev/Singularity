@@ -13,12 +13,13 @@ namespace Rendering
     public:
         Quad();
         Quad(const glm::vec4& color);
-        Quad(const char* diffuse);
-        Quad(const char* diffuse, const char* specular);
-        Quad(const char* diffuse, const char* specular, const char* normal);
+        Quad(const char* diffuse, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan);
+        Quad(const char* diffuse, const char* specular, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan);
+        Quad(const char* diffuse, const char* specular, const char* normal, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan);
         ~Quad();
 
         void Draw() override;
+        void Draw(const glm::mat4& model) override;
 
     private:
         void CreateVertices();

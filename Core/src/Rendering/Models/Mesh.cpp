@@ -32,6 +32,17 @@ namespace Rendering
         SetupMesh(vertices, indices);
     }
 
+    Mesh::Mesh(const Mesh& mesh) 
+    {
+        m_Shader = mesh.m_Shader;
+        b_HasTexture = mesh.b_HasTexture;
+        m_Diffuse = mesh.m_Diffuse;
+        m_Normal = mesh.m_Normal;
+        m_Specular = mesh.m_Specular;
+        m_IndicesNumber = mesh.m_IndicesNumber;
+        VAO = mesh.VAO;
+    }
+
     Mesh::~Mesh() 
     {
         
@@ -42,9 +53,9 @@ namespace Rendering
         m_Shader->Bind();
         if(b_HasTexture)
         {
-            m_Diffuse->Bind();
-            m_Specular->Bind();
-            m_Normal->Bind();
+            m_Diffuse->Bind(0);
+            m_Specular->Bind(1);
+            m_Normal->Bind(2);
             m_Shader->SetUniform1i("material.diffuse", 0);
             m_Shader->SetUniform1i("material.specular", 1);
             m_Shader->SetUniform1i("material.normal", 2);
@@ -63,6 +74,11 @@ namespace Rendering
 
         glBindVertexArray(0);
         m_Shader->Unbind();
+    }
+
+    void Mesh::Draw(const glm::mat4& model) 
+    {
+        
     }
 
     void Mesh::SetNewShader(std::shared_ptr<Rendering::Shader> shader) 
@@ -92,7 +108,6 @@ namespace Rendering
             sizeof(Rendering::VertexLayout) * vertices.size(), 
             &vertices[0], 
             GL_STATIC_DRAW);
-
 
         //INDEX BUFFER
 

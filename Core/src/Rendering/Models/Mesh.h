@@ -24,10 +24,13 @@ namespace Rendering
             std::shared_ptr<Rendering::Shader> shader,
             Material material,
             bool hasTexture = false);
+        
+        Mesh(const Mesh& mesh);
 
         ~Mesh();
 
         void Draw() override;
+        void Draw(const glm::mat4& model) override;
 
         void SetNewShader(std::shared_ptr<Rendering::Shader> shader);
 

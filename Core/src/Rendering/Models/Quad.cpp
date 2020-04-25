@@ -11,21 +11,21 @@ namespace Rendering
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse, const char* specular, const char* normal) 
+    Quad::Quad(const char* diffuse, const char* specular, const char* normal, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan) 
     {
         b_HasTexture = true;
         activeTextures.types = DIFFUSE | SPECULAR | NORMAL;
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse, const char* specular) 
+    Quad::Quad(const char* diffuse, const char* specular, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan) 
     {
         b_HasTexture = true;
         activeTextures.types = DIFFUSE | SPECULAR;
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse) 
+    Quad::Quad(const char* diffuse, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan) 
     {
         b_HasTexture = true;
         activeTextures.types = DIFFUSE;
@@ -48,6 +48,16 @@ namespace Rendering
     void Quad::Draw() 
     {
         m_Shader->Bind();
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+        m_Shader->Unbind();
+    }
+
+    void Quad::Draw(const glm::mat4& model) 
+    {
+        m_Shader->Bind();
+        m_Shader->SetUniformMatrix4fv("model", model);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);

@@ -9,9 +9,16 @@ namespace Rendering
     Model::Model(const char* filePath, std::shared_ptr<Shader> Shader) 
         : m_Path(filePath), m_Shader(Shader)
     {
+        b_UseManager = false;
         CORE_INFO("Loading model: ", filePath);
-        m_Dir = m_Path.substr(0, m_Path.find_last_of('/'));
-        m_Dir = m_Dir + '/';
+        Load();
+    }
+
+    Model::Model(const char* filePath, Manager::TextureManager& textureManager, Manager::ShaderManager& shaderManager) 
+        : m_Path(filePath), iRenderable(textureManager, shaderManager)
+    {
+        CORE_INFO("Loading model: ", filePath);
+        b_UseManager = true; 
         Load();
     }
 
@@ -24,12 +31,23 @@ namespace Rendering
     {
         for(uint i = 0; i < m_Meshes.size(); i++)
         {
-            m_Meshes[i].Draw();
+            m_Meshes[i]->Draw();
+        }
+    }
+
+    void Model::Draw(const glm::mat4& modelMatrix) 
+    {
+        for(uint i = 0; i < m_Meshes.size(); i++)
+        {
+            m_Meshes[i]->Draw(modelMatrix);
         }
     }
 
     void Model::Load() 
     {
+        m_Dir = m_Path.substr(0, m_Path.find_last_of('/'));
+        m_Dir = m_Dir + '/';
+
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(m_Path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
@@ -55,7 +73,7 @@ namespace Rendering
         }
     }
 
-    Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene) 
+    std::unique_ptr<Mesh> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene) 
     {
         std::vector<VertexLayout> vertices;
         std::vector<uint> indices;
@@ -174,18 +192,28 @@ namespace Rendering
             material->GetTexture(aiTextureType_SPECULAR, 0, &strSpec);
             if (strDiff.C_Str() != "")
             {
+                if(b_UseManager)
+                {
+                    std::string path = m_Dir + strDiff.C_Str();
+                    Diffuse = m_TexMan->LoadTexture(path.c_str());
+                    path = m_Dir + strSpec.C_Str();
+                    Specular = m_TexMan->LoadTexture(path.c_str());
+                    path = m_Dir + strNorm.C_Str();
+                    Normal = m_TexMan->LoadTexture(path.c_str());
+                    return std::make_unique<Mesh>(vertices, indices, Diffuse, Specular, Normal, m_Shader, outMaterial);
+                }
                 std::string path = m_Dir + strDiff.C_Str();
-                Diffuse = std::make_shared<Texture>(path.c_str(), 0, true);
+                Diffuse = std::make_shared<Texture>(path.c_str());
                 path = m_Dir + strSpec.C_Str();
-                Specular = std::make_shared<Texture>(path.c_str(), 1, true);
+                Specular = std::make_shared<Texture>(path.c_str());
                 path = m_Dir + strNorm.C_Str();
-                Normal = std::make_shared<Texture>(path.c_str(), 2, true);
-                return Mesh(vertices, indices, Diffuse, Specular, Normal, m_Shader, outMaterial);
+                Normal = std::make_shared<Texture>(path.c_str());
+                return std::make_unique<Mesh>(vertices, indices, Diffuse, Specular, Normal, m_Shader, outMaterial);
             }
-
         }
-        return Mesh(vertices, indices, m_Shader, outMaterial);
-        
+        return std::make_unique<Mesh>(vertices, indices, m_Shader, outMaterial);
     }
 }
+
+
 
