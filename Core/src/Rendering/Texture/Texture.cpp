@@ -7,8 +7,7 @@
 
 namespace Rendering
 {
-    Texture::Texture(const char* filePath, uint channel, bool sRGB)
-        : channel(channel)
+    Texture::Texture(const char* filePath)
     {
         CORE_INFO("Loading texture: ", filePath);
         glGenTextures(1, &TextureID);
@@ -22,14 +21,8 @@ namespace Rendering
         int width, height, nrChannels;
         byte* data = stbi_load(filePath, &width, &height, &nrChannels, 0);
 
-        int internalFormat = nrChannels == 4 ? GL_RGBA : GL_RGB;
-		uint format = nrChannels == 4 ? GL_RGBA : GL_RGB;
-        if(sRGB)
-        {
-            int internalFormat = GL_SRGB_ALPHA;
-		    uint format = GL_SRGB_ALPHA;
-        }
-        
+        int internalFormat = nrChannels == 4 ? GL_RGBA : GL_RGB; //GL_SRGB_ALPHA
+		uint format = nrChannels == 4 ? GL_RGBA : GL_RGB;        
 
         if(data)
         {
@@ -51,7 +44,7 @@ namespace Rendering
         
     }
 
-    void Texture::Bind() 
+    void Texture::Bind(uint channel) 
     {
         glActiveTexture(GL_TEXTURE0 + channel);
         glBindTexture(GL_TEXTURE_2D, TextureID);

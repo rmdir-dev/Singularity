@@ -26,10 +26,11 @@ namespace Rendering
     //        FUNCTIONS
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
-        Texture(const char* filePath, uint channel = 0, bool sRGB = false);
+        Texture(const char* filePath);
         ~Texture();
 
-        void Bind();
+        //void Bind();
+        void Bind(uint channel);
         void Unbind();
 
         uint GetTextureID();
@@ -44,7 +45,5 @@ namespace Rendering
 
     private:
         uint TextureID;
-        uint channel;
-
     };
 }
