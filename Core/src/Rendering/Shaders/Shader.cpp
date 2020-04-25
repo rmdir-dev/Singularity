@@ -13,6 +13,12 @@ namespace Rendering
         ID = CreateShader(vs, fs);
     }
 
+    Shader::Shader(const std::string& vertShader, const std::string& fragShader) 
+    {
+        CORE_INFO("Loading Shaders from code");
+        ID = CreateShader(vertShader, fragShader);
+    }
+
     Shader::~Shader() 
     {
         glDeleteProgram(ID);

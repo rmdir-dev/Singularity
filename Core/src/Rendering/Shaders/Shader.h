@@ -12,6 +12,7 @@ namespace Rendering
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
         Shader(const char* filePath);
+        Shader(const std::string& vertShader, const std::string& fragShader);
         ~Shader();
 
         void Bind();
