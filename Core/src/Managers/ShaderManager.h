@@ -34,6 +34,10 @@ namespace Manager
     public:
         ShaderManager();
         ~ShaderManager();
+
+        /*
+        */
+        void addShader(std::string name, std::shared_ptr<Rendering::Shader> shader);
         
         /*
         */
