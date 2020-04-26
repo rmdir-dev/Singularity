@@ -38,5 +38,6 @@ add_executable(SingularityEngine ${testSrc})
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SingularityEngine)
 
 file(COPY Assets/ DESTINATION ${EXECUTABLE_OUTPUT_PATH}/Assets)
+file(COPY CheckMemoryLeak.sh DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 
 target_link_libraries(SingularityEngine Core)
