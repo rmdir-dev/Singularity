@@ -1,2 +1,1 @@
-valgrind --log-file=LEAK_CHECK.txt --leak-check=fu
-ll --track-origins=yes ./SingularityEngine
+valgrind --log-file=LEAK_CHECK.txt --leak-check=full --track-origins=yes ./SingularityEngine
