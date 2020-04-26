@@ -10,7 +10,7 @@ namespace Layer
 {
     TestLayer::TestLayer() 
     {
-        m_Shader = std::make_shared<Rendering::Shader>("Assets/3DShaderLight");
+        m_Shader = std::make_shared<Rendering::Shader>("Assets/BasicTextureDS");
         m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
         m_Light = std::make_shared<Rendering::Lights>(glm::vec3(1.0f, 0.0, 2.0f));
         m_Light->SetShader(m_LightShader);
@@ -65,7 +65,15 @@ namespace Layer
         //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
         //m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
         //m_ObjMan.AddModel("Assets/Nano/nanosuit.obj", m_Shader, &model);
-        m_ObjMan.AddQuad(&model);
+        Material material = 
+        {
+            glm::vec4(0.5),
+            glm::vec4(0.5),
+            glm::vec4(1.0),
+            1.0f,
+            16
+        };
+        m_ObjMan.AddQuad("Assets/container2.png", "Assets/container2_specular.png", &model, m_Shader);
 
         m_Shader->Bind();
         m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
