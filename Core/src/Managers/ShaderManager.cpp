@@ -8,10 +8,21 @@ namespace Manager
                             #version 330 core\n\
                             \n\
                             layout (location = 0) in vec3 inPos;\n\
+                            layout (location = 1) in vec4 inColor;\n\
+                            layout (location = 2) in vec2 inUvs;\n\
+                            layout (location = 3) in vec3 inNormals;\n\
+                            layout (location = 4) in vec3 inTangent;\n\
+                            layout (location = 5) in vec3 inBitangent;\n\ 
+                            \n\
+                            uniform mat4 model;\n\
+                            uniform mat4 view;\n\
+                            uniform mat4 projection;\n\
+                            uniform vec3 vColor;\n\
                             \n\
                             void main()\n\
                             {\n\
-                                gl_Position = vec4(inPos.x, inPos.y, inPos.z, 1.0);\n\
+                                vec3 fragPosition = vec3(model * vec4(inPos, 1.0));\n\
+                                gl_Position = projection * view * vec4(fragPosition, 1.0);\n\
                             }";
 
         std::string frag = "//Shader FRAGMENT\n\
@@ -54,9 +65,9 @@ namespace Manager
         return m_Shaders[name];
     }
 
-    std::shared_ptr<Rendering::Shader> ShaderManager::GetBestShader(const ShaderOptions& options) 
+    std::shared_ptr<Rendering::Shader> ShaderManager::GetBestShader(const byte& options) 
     {
-        switch (options.flags)
+        switch (options)
         {
         case TEXDIFF:
             return m_Shaders["BasicTextureD"];
@@ -78,6 +89,26 @@ namespace Manager
         }
         //TODO
         return m_Shaders["Default"];
+    }
+
+    void ShaderManager::SetView(const glm::mat4& view) 
+    {
+        for(std::pair<std::string, std::shared_ptr<Rendering::Shader>> element : m_Shaders)
+        {
+            element.second->Bind();
+            element.second->SetUniformMatrix4fv("view", view);
+            element.second->Unbind();
+        }
+    }
+
+    void ShaderManager::SetProjection(const glm::mat4& projection) 
+    {
+        for(std::pair<std::string, std::shared_ptr<Rendering::Shader>> element : m_Shaders)
+        {
+            element.second->Bind();
+            element.second->SetUniformMatrix4fv("projection", projection);
+            element.second->Unbind();
+        }
     }
 }
 

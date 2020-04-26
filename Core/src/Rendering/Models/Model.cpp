@@ -173,8 +173,7 @@ namespace Rendering
         Material outMaterial;
 
         if (scene->mNumMaterials > 0)
-        {
-            
+        {            
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
             aiColor4D color;
             material->Get(AI_MATKEY_COLOR_AMBIENT, color);

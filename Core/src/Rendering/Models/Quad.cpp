@@ -3,37 +3,42 @@
 
 namespace Rendering
 {
-    Quad::Quad() 
+    Quad::Quad(std::shared_ptr<Shader> shader) 
     {
+        m_Shader = shader;
         m_Color = glm::vec4(1.0f);
         b_HasTexture = false;
         activeTextures.types = 0x00;
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse, const char* specular, const char* normal, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan) 
+    Quad::Quad(const char* diffuse, const char* specular, const char* normal, Manager::TextureManager& texMan, std::shared_ptr<Shader> shader) 
     {
+        m_Shader = shader;
         b_HasTexture = true;
         activeTextures.types = DIFFUSE | SPECULAR | NORMAL;
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse, const char* specular, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan) 
+    Quad::Quad(const char* diffuse, const char* specular, Manager::TextureManager& texMan, std::shared_ptr<Shader> shader) 
     {
+        m_Shader = shader;
         b_HasTexture = true;
         activeTextures.types = DIFFUSE | SPECULAR;
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan) 
+    Quad::Quad(const char* diffuse, Manager::TextureManager& texMan, std::shared_ptr<Shader> shader) 
     {
+        m_Shader = shader;
         b_HasTexture = true;
         activeTextures.types = DIFFUSE;
         CreateVertices();
     }
 
-    Quad::Quad(const glm::vec4& color) 
+    Quad::Quad(const glm::vec4& color, std::shared_ptr<Shader> shader) 
     {
+        m_Shader = shader;
         m_Color = color;
         b_HasTexture = false;
         activeTextures.types = 0x00;

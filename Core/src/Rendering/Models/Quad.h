@@ -11,11 +11,11 @@ namespace Rendering
         //        FUNCTIONS
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
-        Quad();
-        Quad(const glm::vec4& color);
-        Quad(const char* diffuse, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan);
-        Quad(const char* diffuse, const char* specular, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan);
-        Quad(const char* diffuse, const char* specular, const char* normal, Manager::TextureManager& texMan, Manager::ShaderManager& shadMan);
+        Quad(std::shared_ptr<Shader> m_Shader);
+        Quad(const glm::vec4& color, std::shared_ptr<Shader> m_Shader);
+        Quad(const char* diffuse, Manager::TextureManager& texMan, std::shared_ptr<Shader> m_Shader);
+        Quad(const char* diffuse, const char* specular, Manager::TextureManager& texMan, std::shared_ptr<Shader> m_Shader);
+        Quad(const char* diffuse, const char* specular, const char* normal, Manager::TextureManager& texMan, std::shared_ptr<Shader> m_Shader);
         ~Quad();
 
         void Draw() override;

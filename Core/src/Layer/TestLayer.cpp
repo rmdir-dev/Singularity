@@ -37,8 +37,8 @@ namespace Layer
         m_Shader->Bind();       
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.4f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
+        //model = glm::translate(model, glm::vec3(0.0f, -1.4f, 0.0f)); // translate it down so it's at the center of the scene
+        //model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
         projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 250.0f);
 
         m_Shader->SetUniformMatrix4fv("model", model);
@@ -64,7 +64,8 @@ namespace Layer
     {
         //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
         //m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
-        m_ObjMan.AddModel("Assets/Nano/nanosuit.obj", m_Shader, &model);
+        //m_ObjMan.AddModel("Assets/Nano/nanosuit.obj", m_Shader, &model);
+        m_ObjMan.AddQuad(&model);
 
         m_Shader->Bind();
         m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
@@ -74,6 +75,9 @@ namespace Layer
         m_Shader->SetUniform3f("diffuseLight.specular", m_Light->m_Specular);
         //m_Shader->SetUniform1f("diffuseLight.intensity", m_Light->m_Intensity);
         m_Shader->Unbind();
+
+        m_ObjMan.SetProjection(projection);
+        m_ObjMan.SetView(view);
     }
 
     void TestLayer::OnShutDown() 
@@ -98,12 +102,13 @@ namespace Layer
         //TRANSLATION        
         //model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         //ROTATION
-        model = glm::rotate(model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        //model = glm::rotate(model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         m_Shader->SetUniformMatrix4fv("model", model);
         //m_Model->Draw();
+        m_Shader->Unbind();
+        //PROJECTION AND VIEW NOT SETS !!!!
         m_ObjMan.Render();
 
-        m_Shader->Unbind();
         m_Light->Draw();
     }
 
@@ -118,6 +123,8 @@ namespace Layer
         m_LightShader->Bind();
         m_LightShader->SetUniformMatrix4fv("view", view);
         m_LightShader->Unbind();
+
+        m_ObjMan.SetView(view);
     }
 
     void TestLayer::UpdateMouvement(const float& deltaTime) 
@@ -262,6 +269,8 @@ namespace Layer
         m_LightShader->Bind();
         m_LightShader->SetUniformMatrix4fv("projection", projection);
         m_LightShader->Unbind();
+
+        m_ObjMan.SetProjection(projection);
 
         return true;
     }

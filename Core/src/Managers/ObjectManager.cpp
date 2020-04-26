@@ -34,7 +34,7 @@ namespace Manager
     {
         if(SearchModel("Quad"))
         {
-            m_Objects["Quad"] = std::make_shared<Rendering::Quad>();
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(shaderManager.GetBestShader(0x00));
         }
         m_Renderables.push_back({ "Quad", modelMatrix });
         return m_Renderables.size() - 1;
@@ -59,7 +59,7 @@ namespace Manager
     {
         if(SearchModel("Quad"))
         {
-            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(color);
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(color, shaderManager.GetBestShader(LIGHTPOINT));
         }
         m_Renderables.push_back({ "Quad", modelMatrix });
         return m_Renderables.size() - 1;
@@ -68,6 +68,16 @@ namespace Manager
     uint ObjectManager::AddCube(glm::mat4* modelMatrix) 
     {
         
+    }
+
+    void ObjectManager::SetView(const glm::mat4& view) 
+    {
+        shaderManager.SetView(view);
+    }
+
+    void ObjectManager::SetProjection(const glm::mat4& projection) 
+    {
+        shaderManager.SetProjection(projection);
     }
 
     void ObjectManager::Render() 

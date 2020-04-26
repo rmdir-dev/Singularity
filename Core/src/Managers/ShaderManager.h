@@ -45,7 +45,10 @@ namespace Manager
         
         /*
         */
-        std::shared_ptr<Rendering::Shader> GetBestShader(const ShaderOptions& options);
+        std::shared_ptr<Rendering::Shader> GetBestShader(const byte& options);
+
+        void SetView(const glm::mat4& view);
+        void SetProjection(const glm::mat4& projection);
 
     private:
     

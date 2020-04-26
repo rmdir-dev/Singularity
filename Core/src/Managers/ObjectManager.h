@@ -33,6 +33,9 @@ namespace Manager
 
         uint AddCube(glm::mat4* modelMatrix);
 
+        void SetView(const glm::mat4& view);
+        void SetProjection(const glm::mat4& projection);
+
         void Render();
 
     private:
