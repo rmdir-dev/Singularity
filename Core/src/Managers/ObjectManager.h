@@ -26,10 +26,11 @@ namespace Manager
         uint AddModel(const char* objectPath, std::shared_ptr<Rendering::Shader> shader, glm::mat4* modelMatrix);
 
         uint AddQuad(glm::mat4* modelMatrix);
-        uint AddQuad(const glm::vec4& color, glm::mat4* modelMatrix);
-        uint AddQuad(const char* diffuse, glm::mat4* modelMatrix);
-        uint AddQuad(const char* diffuse, const char* specular, glm::mat4* modelMatrix);
-        uint AddQuad(const char* diffuse, const char* specular, const char* normal, glm::mat4* modelMatrix);
+        uint AddQuad(const Material& material, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader);
+        uint AddQuad(const glm::vec4& color, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader);
+        uint AddQuad(const char* diffuse, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader);
+        uint AddQuad(const char* diffuse, const char* specular, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader);
+        uint AddQuad(const char* diffuse, const char* specular, const char* normal, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader);
 
         uint AddCube(glm::mat4* modelMatrix);
 

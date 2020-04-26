@@ -40,26 +40,54 @@ namespace Manager
         return m_Renderables.size() - 1;
     }
 
-    uint ObjectManager::AddQuad(const char* diffuse, const char* specular, const char* normal, glm::mat4* modelMatrix) 
-    {
-        
-    }
-
-    uint ObjectManager::AddQuad(const char* diffuse, const char* specular, glm::mat4* modelMatrix) 
-    {
-        
-    }
-
-    uint ObjectManager::AddQuad(const char* diffuse, glm::mat4* modelMatrix) 
-    {
-        
-    }
-
-    uint ObjectManager::AddQuad(const glm::vec4& color, glm::mat4* modelMatrix) 
+    uint ObjectManager::AddQuad(const Material& material, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
     {
         if(SearchModel("Quad"))
         {
-            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(color, shaderManager.GetBestShader(LIGHTPOINT));
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(material, shader);
+        }
+        m_Renderables.push_back({ "Quad", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddQuad(const char* diffuse, const char* specular, const char* normal, 
+            glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Quad"))
+        {
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(textureManager.LoadTexture(diffuse), 
+            textureManager.LoadTexture(specular), textureManager.LoadTexture(normal), shader);
+        }
+        m_Renderables.push_back({ "Quad", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddQuad(const char* diffuse, const char* specular, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Quad"))
+        {
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(textureManager.LoadTexture(diffuse), 
+            textureManager.LoadTexture(specular), shader);
+        }
+        m_Renderables.push_back({ "Quad", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddQuad(const char* diffuse, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Quad"))
+        {
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(textureManager.LoadTexture(diffuse), shader);
+        }
+        m_Renderables.push_back({ "Quad", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddQuad(const glm::vec4& color, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Quad"))
+        {
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(color, shader);
         }
         m_Renderables.push_back({ "Quad", modelMatrix });
         return m_Renderables.size() - 1;
