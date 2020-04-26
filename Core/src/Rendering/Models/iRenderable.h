@@ -20,10 +20,12 @@ namespace Rendering
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
         iRenderable() {}
-        iRenderable(Manager::TextureManager& texMan, Manager::ShaderManager& shadMan) 
-            : m_TexMan(std::make_unique<Manager::TextureManager>(texMan)), m_ShadMan(std::make_unique<Manager::ShaderManager>(shadMan))
+        iRenderable(Manager::TextureManager& texMan) 
+            : m_TexMan(&texMan)
         {}
-        virtual ~iRenderable() {}
+        virtual ~iRenderable() 
+        {
+        }
         virtual void Draw() = 0;
         virtual void Draw(const glm::mat4& model) = 0;
 
@@ -44,7 +46,6 @@ namespace Rendering
         glm::vec4 m_Color;
         bool b_HasTexture;
         TextureType activeTextures;
-        std::unique_ptr<Manager::TextureManager> m_TexMan;
-        std::unique_ptr<Manager::ShaderManager> m_ShadMan;
+        Manager::TextureManager* m_TexMan;
     };
 }

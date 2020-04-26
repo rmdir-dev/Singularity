@@ -16,11 +16,11 @@ namespace Rendering
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
         Model(const char* filePath, std::shared_ptr<Shader> Shader);
-        Model(const char* filePath, Manager::TextureManager& textureManager, Manager::ShaderManager& shaderManager);
+        Model(const char* filePath, Manager::TextureManager& textureManager, std::shared_ptr<Shader> Shader);
         ~Model();
 
         void Draw() override;
-        void Draw(const glm::mat4& modelMatrix) override;
+        void Draw(const glm::mat4& model) override;
 
     private:
         void Load();

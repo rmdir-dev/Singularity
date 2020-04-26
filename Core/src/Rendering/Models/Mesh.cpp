@@ -76,9 +76,11 @@ namespace Rendering
         m_Shader->Unbind();
     }
 
-    void Mesh::Draw(const glm::mat4& model) 
+    void Mesh::Draw(const glm::mat4& model)  
     {
-        
+        m_Shader->Bind();
+        m_Shader->SetUniformMatrix4fv("model", model);
+        Draw();
     }
 
     void Mesh::SetNewShader(std::shared_ptr<Rendering::Shader> shader) 

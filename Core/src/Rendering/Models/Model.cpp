@@ -14,8 +14,8 @@ namespace Rendering
         Load();
     }
 
-    Model::Model(const char* filePath, Manager::TextureManager& textureManager, Manager::ShaderManager& shaderManager) 
-        : m_Path(filePath), iRenderable(textureManager, shaderManager)
+    Model::Model(const char* filePath, Manager::TextureManager& textureManager, std::shared_ptr<Shader> Shader) 
+        : m_Path(filePath), iRenderable(textureManager), m_Shader(Shader)
     {
         CORE_INFO("Loading model: ", filePath);
         b_UseManager = true; 
@@ -35,11 +35,11 @@ namespace Rendering
         }
     }
 
-    void Model::Draw(const glm::mat4& modelMatrix) 
+    void Model::Draw(const glm::mat4& model) 
     {
         for(uint i = 0; i < m_Meshes.size(); i++)
         {
-            m_Meshes[i]->Draw(modelMatrix);
+            m_Meshes[i]->Draw(model);
         }
     }
 
@@ -200,6 +200,8 @@ namespace Rendering
                     Specular = m_TexMan->LoadTexture(path.c_str());
                     path = m_Dir + strNorm.C_Str();
                     Normal = m_TexMan->LoadTexture(path.c_str());
+
+                    //TEST ONLY!!! Shader will be loaded before hand.
                     return std::make_unique<Mesh>(vertices, indices, Diffuse, Specular, Normal, m_Shader, outMaterial);
                 }
                 std::string path = m_Dir + strDiff.C_Str();
