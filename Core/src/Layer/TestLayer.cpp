@@ -63,7 +63,9 @@ namespace Layer
     void TestLayer::OnStart() 
     {
         //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
-        m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
+        //m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
+        m_ObjMan.AddModel("Assets/Nano/nanosuit.obj", m_Shader, &model);
+
         m_Shader->Bind();
         m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
         m_Shader->SetUniform3f("diffuseLight.color", m_Light->m_Color);
@@ -98,7 +100,8 @@ namespace Layer
         //ROTATION
         model = glm::rotate(model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         m_Shader->SetUniformMatrix4fv("model", model);
-        m_Model->Draw();
+        //m_Model->Draw();
+        m_ObjMan.Render();
 
         m_Shader->Unbind();
         m_Light->Draw();

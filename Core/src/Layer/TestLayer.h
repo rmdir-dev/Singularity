@@ -2,6 +2,7 @@
 
 #include "Layer.h"
 #include "Rendering/Rendering.h"
+#include "Managers/ObjectManager.h"
 
 #define INIDICE_NBR 36
 
@@ -132,6 +133,9 @@ namespace Layer
 
         //Mouvement
         float sinMov;
+
+        //ObjectManager
+        Manager::ObjectManager m_ObjMan;
 
     public:
     };
