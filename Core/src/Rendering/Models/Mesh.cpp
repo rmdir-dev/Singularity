@@ -11,9 +11,10 @@ namespace Rendering
                 std::shared_ptr<Rendering::Shader> shader,
                 Material material,
                 bool hasTexture) 
-                : m_Diffuse(diffuse), 
-                m_Specular(specular), m_Normal(normal)
     {
+        m_Diffuse = diffuse;
+        m_Normal = normal;
+        m_Specular = specular;
         b_HasTexture = hasTexture;
         m_Material = material;
         m_Shader = shader;

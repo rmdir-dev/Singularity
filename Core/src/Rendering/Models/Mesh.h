@@ -45,8 +45,6 @@ namespace Rendering
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
     private:
-        std::shared_ptr<Rendering::Texture> m_Diffuse;
-        std::shared_ptr<Rendering::Texture> m_Specular;
-        std::shared_ptr<Rendering::Texture> m_Normal;
+        
     };
 }

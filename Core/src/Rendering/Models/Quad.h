@@ -12,10 +12,12 @@ namespace Rendering
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
         Quad(std::shared_ptr<Shader> m_Shader);
+        Quad(const Material& material, std::shared_ptr<Shader> m_Shader);
         Quad(const glm::vec4& color, std::shared_ptr<Shader> m_Shader);
-        Quad(const char* diffuse, Manager::TextureManager& texMan, std::shared_ptr<Shader> m_Shader);
-        Quad(const char* diffuse, const char* specular, Manager::TextureManager& texMan, std::shared_ptr<Shader> m_Shader);
-        Quad(const char* diffuse, const char* specular, const char* normal, Manager::TextureManager& texMan, std::shared_ptr<Shader> m_Shader);
+        Quad(std::shared_ptr<Rendering::Texture> diffuse, std::shared_ptr<Shader> m_Shader);
+        Quad(std::shared_ptr<Rendering::Texture> diffuse, std::shared_ptr<Rendering::Texture> specular, std::shared_ptr<Shader> m_Shader);
+        Quad(std::shared_ptr<Rendering::Texture> diffuse, std::shared_ptr<Rendering::Texture> specular, 
+        std::shared_ptr<Rendering::Texture> normal, std::shared_ptr<Shader> m_Shader);
         ~Quad();
 
         void Draw() override;
@@ -31,6 +33,7 @@ namespace Rendering
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
     private:
+        bool b_HasMaterial;
         
     };
 }

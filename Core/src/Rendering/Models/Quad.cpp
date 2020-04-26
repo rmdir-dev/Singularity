@@ -7,32 +7,77 @@ namespace Rendering
     {
         m_Shader = shader;
         m_Color = glm::vec4(1.0f);
+        b_HasMaterial = false;
         b_HasTexture = false;
         activeTextures.types = 0x00;
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse, const char* specular, const char* normal, Manager::TextureManager& texMan, std::shared_ptr<Shader> shader) 
+    Quad::Quad(const Material& material, std::shared_ptr<Shader> shader) 
     {
         m_Shader = shader;
+        m_Color = glm::vec4(1.0f);
+        m_Material = material;
+        b_HasMaterial = true;
         b_HasTexture = true;
-        activeTextures.types = DIFFUSE | SPECULAR | NORMAL;
+        activeTextures.types = 0x00;
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse, const char* specular, Manager::TextureManager& texMan, std::shared_ptr<Shader> shader) 
+    Quad::Quad(const std::shared_ptr<Rendering::Texture> diffuse, const std::shared_ptr<Rendering::Texture> specular, const std::shared_ptr<Rendering::Texture> normal, std::shared_ptr<Shader> shader) 
     {
+        m_Diffuse = diffuse;
+        m_Specular = specular;
+        m_Normal = normal;
         m_Shader = shader;
+        m_Material = 
+        {
+            glm::vec4(0.5),
+            glm::vec4(0.5),
+            glm::vec4(1.0),
+            1.0f,
+            16
+        };
         b_HasTexture = true;
-        activeTextures.types = DIFFUSE | SPECULAR;
+        b_HasMaterial = true;
+        activeTextures.types = TEX_DIFFUSE | TEX_SPECULAR | TEX_NORMAL;
         CreateVertices();
     }
 
-    Quad::Quad(const char* diffuse, Manager::TextureManager& texMan, std::shared_ptr<Shader> shader) 
+    Quad::Quad(const std::shared_ptr<Rendering::Texture> diffuse, const std::shared_ptr<Rendering::Texture> specular, std::shared_ptr<Shader> shader) 
     {
+        m_Diffuse = diffuse;
+        m_Specular = specular;
         m_Shader = shader;
+        m_Material = 
+        {
+            glm::vec4(0.5),
+            glm::vec4(0.5),
+            glm::vec4(1.0),
+            1.0f,
+            16
+        };
         b_HasTexture = true;
-        activeTextures.types = DIFFUSE;
+        b_HasMaterial = true;
+        activeTextures.types = TEX_DIFFUSE | TEX_SPECULAR;
+        CreateVertices();
+    }
+
+    Quad::Quad(const std::shared_ptr<Rendering::Texture> diffuse, std::shared_ptr<Shader> shader) 
+    {
+        m_Diffuse = diffuse;
+        m_Shader = shader;
+        m_Material = 
+        {
+            glm::vec4(0.5),
+            glm::vec4(0.5),
+            glm::vec4(1.0),
+            1.0f,
+            16
+        };
+        b_HasTexture = true;
+        b_HasMaterial = true;
+        activeTextures.types = TEX_DIFFUSE;
         CreateVertices();
     }
 
@@ -40,7 +85,16 @@ namespace Rendering
     {
         m_Shader = shader;
         m_Color = color;
+        m_Material = 
+        {
+            glm::vec4(0.5),
+            glm::vec4(0.5),
+            glm::vec4(1.0),
+            1.0f,
+            16
+        };
         b_HasTexture = false;
+        b_HasMaterial = false;
         activeTextures.types = 0x00;
         CreateVertices();
     }
@@ -53,6 +107,37 @@ namespace Rendering
     void Quad::Draw() 
     {
         m_Shader->Bind();
+        if(b_HasMaterial)
+        {   
+            if(activeTextures.types & TEX_DIFFUSE)
+            {
+                m_Diffuse->Bind(0);
+                m_Shader->SetUniform1i("material.diffuse", 0);
+            } else 
+            {
+                m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
+                m_Shader->SetUniform3f("material.diffuse", m_Material.diffuse);
+            }
+
+            if(activeTextures.types & TEX_SPECULAR)
+            {
+                m_Specular->Bind(1);
+                m_Shader->SetUniform1i("material.specular", 1);
+            } else 
+            {
+                m_Shader->SetUniform3f("material.specular", m_Material.specular);
+            }
+
+            if(activeTextures.types & TEX_NORMAL)
+            {
+                m_Normal->Bind(2);
+                m_Shader->SetUniform1i("material.normal", 2);
+            }
+            
+            m_Shader->SetUniform1f("material.opacity", m_Material.opacity); 
+            m_Shader->SetUniform1f("material.shininess", m_Material.shininess);  
+        }
+
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
@@ -62,6 +147,36 @@ namespace Rendering
     void Quad::Draw(const glm::mat4& model) 
     {
         m_Shader->Bind();
+        if(b_HasMaterial)
+        {   
+            if(activeTextures.types & TEX_DIFFUSE)
+            {
+                m_Diffuse->Bind(0);
+                m_Shader->SetUniform1i("material.diffuse", 0);
+            } else 
+            {
+                m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
+                m_Shader->SetUniform3f("material.diffuse", m_Material.diffuse);
+            }
+
+            if(activeTextures.types & TEX_SPECULAR)
+            {
+                m_Specular->Bind(1);
+                m_Shader->SetUniform1i("material.specular", 1);
+            } else 
+            {
+                m_Shader->SetUniform3f("material.specular", m_Material.specular);
+            }
+
+            if(activeTextures.types & TEX_NORMAL)
+            {
+                m_Normal->Bind(2);
+                m_Shader->SetUniform1i("material.normal", 2);
+            }
+            //m_Shader->SetUniform1f("material.opacity", m_Material.opacity); 
+            m_Shader->SetUniform1f("material.shininess", m_Material.shininess);  
+        }
+
         m_Shader->SetUniformMatrix4fv("model", model);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);

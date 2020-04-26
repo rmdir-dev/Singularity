@@ -47,5 +47,8 @@ namespace Rendering
         bool b_HasTexture;
         TextureType activeTextures;
         Manager::TextureManager* m_TexMan;
+        std::shared_ptr<Rendering::Texture> m_Diffuse;
+        std::shared_ptr<Rendering::Texture> m_Specular;
+        std::shared_ptr<Rendering::Texture> m_Normal;
     };
 }
