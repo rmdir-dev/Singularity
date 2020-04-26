@@ -10,7 +10,7 @@ namespace Manager
     struct Renderable
     {
         std::string objectName;
-        glm::mat4 modelMatrix;
+        glm::mat4* modelMatrix;
     };
 
     class ObjectManager
@@ -21,28 +21,29 @@ namespace Manager
     public:
         ObjectManager();
         ~ObjectManager();
+        
+        uint AddModel(const char* objectPath, const char* shaderPath, glm::mat4* modelMatrix);
+        uint AddModel(const char* objectPath, std::shared_ptr<Rendering::Shader> shader, glm::mat4* modelMatrix);
 
-        uint AddModel(const char* objectPath, const glm::mat4& modelMatrix);
-        uint AddModel(const char* objectPath, const char* shaderPath, const glm::mat4& modelMatrix);
+        uint AddQuad(glm::mat4* modelMatrix);
+        uint AddQuad(const glm::vec4& color, glm::mat4* modelMatrix);
+        uint AddQuad(const char* diffuse, glm::mat4* modelMatrix);
+        uint AddQuad(const char* diffuse, const char* specular, glm::mat4* modelMatrix);
+        uint AddQuad(const char* diffuse, const char* specular, const char* normal, glm::mat4* modelMatrix);
 
-        uint AddQuad(const glm::mat4& modelMatrix);
-        uint AddQuad(const glm::vec4& color, const glm::mat4& modelMatrix);
-        uint AddQuad(const char* diffuse, const glm::mat4& modelMatrix);
-        uint AddQuad(const char* diffuse, const char* specular, const glm::mat4& modelMatrix);
-        uint AddQuad(const char* diffuse, const char* specular, const char* normal, const glm::mat4& modelMatrix);
-
-        uint AddCube(const glm::mat4& modelMatrix);
+        uint AddCube(glm::mat4* modelMatrix);
 
         void Render();
 
     private:
+        bool SearchModel(const char* objectPath);
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
         //        VARIABLES
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
     private:
-        std::unordered_map<std::string, std::unique_ptr<Rendering::iRenderable>> m_Objects;
+        std::unordered_map<std::string, std::shared_ptr<Rendering::iRenderable>> m_Objects;
         std::vector<Renderable> m_Renderables;
         
         ShaderManager shaderManager;
