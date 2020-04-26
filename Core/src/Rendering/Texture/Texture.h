@@ -2,9 +2,9 @@
 
 #include "Utils/Type.h"
 
-#define DIFFUSE     0x01 // 0000 0001
-#define SPECULAR    0x02 // 0000 0010
-#define NORMAL      0x04 // 0000 0100
+#define TEX_DIFFUSE         0x01 // 0000 0001
+#define TEX_SPECULAR        0x02 // 0000 0010
+#define TEX_NORMAL          0x04 // 0000 0100
 
 
 namespace Rendering
