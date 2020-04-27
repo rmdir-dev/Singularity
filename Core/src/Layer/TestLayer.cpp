@@ -112,7 +112,7 @@ namespace Layer
         //TRANSLATION        
         //model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         //ROTATION
-        cube.model = glm::rotate(cube.model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        cube.model = glm::rotate(cube.model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
         //cube.shader->SetUniformMatrix4fv("model", model);
         //m_Model->Draw();
         //cube.shader->Unbind();
