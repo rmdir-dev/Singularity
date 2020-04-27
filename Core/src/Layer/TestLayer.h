@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Layer.h"
-#include "Rendering/Rendering.h"
-#include "Managers/ObjectManager.h"
 
 #define INIDICE_NBR 36
 
@@ -136,6 +134,9 @@ namespace Layer
 
         //ObjectManager
         Manager::ObjectManager m_ObjMan;
+
+        //Test objects struct
+        Object cube;
 
     public:
     };

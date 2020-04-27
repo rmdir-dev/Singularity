@@ -10,7 +10,9 @@ namespace Layer
 {
     TestLayer::TestLayer() 
     {
-        m_Shader = std::make_shared<Rendering::Shader>("Assets/BasicTextureDS");
+        m_ShaderManager = std::make_shared<Manager::ShaderManager>();
+        m_ObjMan = Manager::ObjectManager(m_ShaderManager);
+        cube.shader = m_ShaderManager->LoadShader("Assets/BasicTextureDS");
         m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
         m_Light = std::make_shared<Rendering::Lights>(glm::vec3(1.0f, 0.0, 2.0f));
         m_Light->SetShader(m_LightShader);
@@ -34,17 +36,17 @@ namespace Layer
 
         UpdateView(); 
 
-        m_Shader->Bind();       
+        cube.shader->Bind();       
 
-        model = glm::mat4(1.0f);
+        cube.model = glm::mat4(1.0f);
         //model = glm::translate(model, glm::vec3(0.0f, -1.4f, 0.0f)); // translate it down so it's at the center of the scene
         //model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
         projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 250.0f);
 
-        m_Shader->SetUniformMatrix4fv("model", model);
-        m_Shader->SetUniformMatrix4fv("projection", projection);
+        cube.shader->SetUniformMatrix4fv("model", cube.model);
+        cube.shader->SetUniformMatrix4fv("projection", projection);
 
-        m_Shader->Unbind();
+        cube.shader->Unbind();
 
         m_LightShader->Bind();
         m_LightShader->SetUniformMatrix4fv("projection", projection);
@@ -62,9 +64,9 @@ namespace Layer
 
     void TestLayer::OnStart() 
     {
-        //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, m_Shader);
-        //m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", m_Shader);
-        //m_ObjMan.AddModel("Assets/Nano/nanosuit.obj", m_Shader, &model);
+        //m_Mesh = std::make_unique<Rendering::Mesh>(m_Vertices, m_Indices, m_Texture, cube.shader);
+        //m_Model = std::make_unique<Rendering::Model>("Assets/Nano/nanosuit.obj", cube.shader);
+        //m_ObjMan.AddModel("Assets/Nano/nanosuit.obj", cube.shader, &model);
         Material material = 
         {
             glm::vec4(0.5),
@@ -73,16 +75,16 @@ namespace Layer
             1.0f,
             16
         };
-        m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &model, m_Shader);
+        m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube.model, cube.shader);
 
-        m_Shader->Bind();
-        m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
-        m_Shader->SetUniform3f("diffuseLight.color", m_Light->m_Color);
-        m_Shader->SetUniform3f("diffuseLight.ambient", m_Light->m_Ambiant);
-        m_Shader->SetUniform3f("diffuseLight.diffuse", m_Light->m_Diffuse);
-        m_Shader->SetUniform3f("diffuseLight.specular", m_Light->m_Specular);
-        //m_Shader->SetUniform1f("diffuseLight.intensity", m_Light->m_Intensity);
-        m_Shader->Unbind();
+        cube.shader->Bind();
+        cube.shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
+        cube.shader->SetUniform3f("diffuseLight.color", m_Light->m_Color);
+        cube.shader->SetUniform3f("diffuseLight.ambient", m_Light->m_Ambiant);
+        cube.shader->SetUniform3f("diffuseLight.diffuse", m_Light->m_Diffuse);
+        cube.shader->SetUniform3f("diffuseLight.specular", m_Light->m_Specular);
+        //cube.shader->SetUniform1f("diffuseLight.intensity", m_Light->m_Intensity);
+        cube.shader->Unbind();
 
         m_ObjMan.SetProjection(projection);
         m_ObjMan.SetView(view);
@@ -96,11 +98,11 @@ namespace Layer
     void TestLayer::OnRender(const float& deltaTime) 
     {
         UpdateMouvement(deltaTime);
-        m_Shader->Bind();
+        cube.shader->Bind();
         //Light translation
         sinMov += 0.001f;
         m_Light->Translate(glm::vec3(0.0f, (sin(sinMov) * 5.0f)* deltaTime, 0.0f));
-        m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
+        cube.shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
         if(sinMov == 400.0f)
         {
             CORE_INFO((float) (sin(sinMov)));
@@ -110,10 +112,10 @@ namespace Layer
         //TRANSLATION        
         //model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         //ROTATION
-        //model = glm::rotate(model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        m_Shader->SetUniformMatrix4fv("model", model);
+        cube.model = glm::rotate(cube.model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        //cube.shader->SetUniformMatrix4fv("model", model);
         //m_Model->Draw();
-        m_Shader->Unbind();
+        //cube.shader->Unbind();
         //PROJECTION AND VIEW NOT SETS !!!!
         m_ObjMan.Render();
 
@@ -122,11 +124,11 @@ namespace Layer
 
     void TestLayer::UpdateView() 
     {
-        m_Shader->Bind();
+        cube.shader->Bind();
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        m_Shader->SetUniformMatrix4fv("view", view);
-        m_Shader->SetUniform3f("cameraPos", cameraPos);
-        m_Shader->Unbind();
+        cube.shader->SetUniformMatrix4fv("view", view);
+        cube.shader->SetUniform3f("cameraPos", cameraPos);
+        cube.shader->Unbind();
 
         m_LightShader->Bind();
         m_LightShader->SetUniformMatrix4fv("view", view);
@@ -269,10 +271,10 @@ namespace Layer
     bool TestLayer::WindowResizeEvent(Event::WindowResize& e) 
     {
         WindowSize size = e.GetWindowSize();
-        m_Shader->Bind();
+        cube.shader->Bind();
         projection = glm::perspective(glm::radians(45.0f), size.width / size.height, 0.1f, 250.0f);
-        m_Shader->SetUniformMatrix4fv("projection", projection);
-        m_Shader->Unbind();
+        cube.shader->SetUniformMatrix4fv("projection", projection);
+        cube.shader->Unbind();
 
         m_LightShader->Bind();
         m_LightShader->SetUniformMatrix4fv("projection", projection);

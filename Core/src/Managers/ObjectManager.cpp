@@ -2,8 +2,9 @@
 
 namespace Manager
 {
-    ObjectManager::ObjectManager() 
+    ObjectManager::ObjectManager(std::shared_ptr<ShaderManager> shaderManager)
     {
+        m_ShaderManager = shaderManager;
     }
 
     ObjectManager::~ObjectManager() 
@@ -14,7 +15,7 @@ namespace Manager
     {
         if(SearchModel(objectPath))
         {
-            m_Objects[objectPath] = std::make_shared<Rendering::Model>(objectPath, textureManager, shaderManager.LoadShader(shaderPath));
+            m_Objects[objectPath] = std::make_shared<Rendering::Model>(objectPath, m_TextureManager, m_ShaderManager->LoadShader(shaderPath));
         }
         m_Renderables.push_back({ objectPath, modelMatrix });
         return m_Renderables.size() - 1;
@@ -24,7 +25,7 @@ namespace Manager
     {
         if(SearchModel(objectPath))
         {
-            m_Objects[objectPath] = std::make_shared<Rendering::Model>(objectPath, textureManager, shader);
+            m_Objects[objectPath] = std::make_shared<Rendering::Model>(objectPath, m_TextureManager, shader);
         }
         m_Renderables.push_back({ objectPath, modelMatrix });
         return m_Renderables.size() - 1;
@@ -34,7 +35,7 @@ namespace Manager
     {
         if(SearchModel("Quad"))
         {
-            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(shaderManager.GetBestShader(0x00));
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(m_ShaderManager->GetBestShader(0x00));
         }
         m_Renderables.push_back({ "Quad", modelMatrix });
         return m_Renderables.size() - 1;
@@ -55,8 +56,8 @@ namespace Manager
     {
         if(SearchModel("Quad"))
         {
-            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(textureManager.LoadTexture(diffuse), 
-            textureManager.LoadTexture(specular), textureManager.LoadTexture(normal), shader);
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(m_TextureManager.LoadTexture(diffuse), 
+            m_TextureManager.LoadTexture(specular), m_TextureManager.LoadTexture(normal), shader);
         }
         m_Renderables.push_back({ "Quad", modelMatrix });
         return m_Renderables.size() - 1;
@@ -66,8 +67,8 @@ namespace Manager
     {
         if(SearchModel("Quad"))
         {
-            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(textureManager.LoadTexture(diffuse), 
-            textureManager.LoadTexture(specular), shader);
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(m_TextureManager.LoadTexture(diffuse), 
+            m_TextureManager.LoadTexture(specular), shader);
         }
         m_Renderables.push_back({ "Quad", modelMatrix });
         return m_Renderables.size() - 1;
@@ -77,7 +78,7 @@ namespace Manager
     {
         if(SearchModel("Quad"))
         {
-            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(textureManager.LoadTexture(diffuse), shader);
+            m_Objects["Quad"] = std::make_shared<Rendering::Quad>(m_TextureManager.LoadTexture(diffuse), shader);
         }
         m_Renderables.push_back({ "Quad", modelMatrix });
         return m_Renderables.size() - 1;
@@ -97,7 +98,7 @@ namespace Manager
     {
         if(SearchModel("Cube"))
         {
-            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(shaderManager.GetBestShader(0x00));
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(m_ShaderManager->GetBestShader(0x00));
         }
         m_Renderables.push_back({ "Cube", modelMatrix });
         return m_Renderables.size() - 1;
@@ -107,8 +108,8 @@ namespace Manager
     {
         if(SearchModel("Cube"))
         {
-            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(textureManager.LoadTexture(diffuse), 
-            textureManager.LoadTexture(specular), textureManager.LoadTexture(normal), shader);
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(m_TextureManager.LoadTexture(diffuse), 
+            m_TextureManager.LoadTexture(specular), m_TextureManager.LoadTexture(normal), shader);
         }
         m_Renderables.push_back({ "Cube", modelMatrix });
         return m_Renderables.size() - 1;
@@ -118,8 +119,8 @@ namespace Manager
     {
         if(SearchModel("Cube"))
         {
-            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(textureManager.LoadTexture(diffuse), 
-            textureManager.LoadTexture(specular), shader);
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(m_TextureManager.LoadTexture(diffuse), 
+            m_TextureManager.LoadTexture(specular), shader);
         }
         m_Renderables.push_back({ "Cube", modelMatrix });
         return m_Renderables.size() - 1;
@@ -129,7 +130,7 @@ namespace Manager
     {
         if(SearchModel("Cube"))
         {
-            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(textureManager.LoadTexture(diffuse), shader);
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(m_TextureManager.LoadTexture(diffuse), shader);
         }
         m_Renderables.push_back({ "Cube", modelMatrix });
         return m_Renderables.size() - 1;
@@ -157,12 +158,12 @@ namespace Manager
 
     void ObjectManager::SetView(const glm::mat4& view) 
     {
-        shaderManager.SetView(view);
+        m_ShaderManager->SetView(view);
     }
 
     void ObjectManager::SetProjection(const glm::mat4& projection) 
     {
-        shaderManager.SetProjection(projection);
+        m_ShaderManager->SetProjection(projection);
     }
 
     void ObjectManager::Render() 

@@ -19,7 +19,8 @@ namespace Manager
         //        FUNCTIONS
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
-        ObjectManager();
+        ObjectManager() {}
+        ObjectManager(std::shared_ptr<ShaderManager> shaderManager);
         ~ObjectManager();
         
         uint AddModel(const char* objectPath, const char* shaderPath, glm::mat4* modelMatrix);
@@ -55,8 +56,8 @@ namespace Manager
         std::unordered_map<std::string, std::shared_ptr<Rendering::iRenderable>> m_Objects;
         std::vector<Renderable> m_Renderables;
         
-        ShaderManager shaderManager;
-        TextureManager textureManager;
+        std::shared_ptr<ShaderManager> m_ShaderManager;
+        TextureManager m_TextureManager;
         
     };
 }

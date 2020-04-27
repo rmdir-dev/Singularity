@@ -1,8 +1,17 @@
 #pragma once
 #include "Utils/Event/Events.h"
+#include "Rendering/Rendering.h"
+#include "Managers/ObjectManager.h"
 
 namespace Layer 
 {
+    struct Object
+    {
+        uint index;
+        std::shared_ptr<Rendering::Shader> shader;
+        glm::mat4 model;
+    };
+
     class Layer
     {
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -40,7 +49,8 @@ namespace Layer
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
     //      Variables
     //!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private:
     public:
+    protected:
+        std::shared_ptr<Manager::ShaderManager> m_ShaderManager;
     };
 }

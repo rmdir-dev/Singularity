@@ -57,7 +57,7 @@ namespace Manager
         std::string name = filePath;
         name = name.substr(name.find('/') + 1, name.length());
         
-        std::unordered_map<std::string, std::shared_ptr<Rendering::Shader>>::const_iterator got = m_Shaders.find(filePath);
+        std::unordered_map<std::string, std::shared_ptr<Rendering::Shader>>::const_iterator got = m_Shaders.find(name);
         if(got == m_Shaders.end())
         {
             m_Shaders[name] = std::make_shared<Rendering::Shader>(filePath);
