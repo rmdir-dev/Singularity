@@ -13,18 +13,24 @@ namespace Rendering
             std::shared_ptr<Rendering::Texture> normal, std::shared_ptr<Shader> shader)
         : iRenderable(shader, BaseMaterial, glm::vec4(1.0), true, TEX_DIFFUSE | TEX_SPECULAR | TEX_NORMAL)
     {
+        m_Diffuse = diffuse;
+        m_Specular = specular;
+        m_Normal = normal;
         CreateVertices();
     }
 
     Cube::Cube(std::shared_ptr<Rendering::Texture> diffuse, std::shared_ptr<Rendering::Texture> specular, std::shared_ptr<Shader> shader) 
         : iRenderable(shader, BaseMaterial, glm::vec4(1.0), true, TEX_DIFFUSE | TEX_SPECULAR)
     {
+        m_Diffuse = diffuse;
+        m_Specular = specular;
         CreateVertices();
     }
 
     Cube::Cube(std::shared_ptr<Rendering::Texture> diffuse, std::shared_ptr<Shader> shader)
         : iRenderable(shader, BaseMaterial, glm::vec4(1.0), true, TEX_DIFFUSE)
     {
+        m_Diffuse = diffuse;
         CreateVertices();
     }
 
@@ -76,7 +82,7 @@ namespace Rendering
                 m_Shader->SetUniform1i("material.normal", 2);
             }
             
-            m_Shader->SetUniform1f("material.opacity", m_Material.opacity); 
+            //m_Shader->SetUniform1f("material.opacity", m_Material.opacity); 
             m_Shader->SetUniform1f("material.shininess", m_Material.shininess);  
         }
 
@@ -221,14 +227,12 @@ namespace Rendering
         vertices[11].color = m_Color;
 
         //TRIANGLE 1
-        glm::vec3 e1 = vertices[7].position - vertices[6].position;
-        glm::vec3 e2 = vertices[8].position - vertices[6].position;
-        glm::vec2 d1 = vertices[7].UVs - vertices[6].UVs;
-        glm::vec2 d2 = vertices[8].UVs - vertices[6].UVs;
+        e1 = vertices[7].position - vertices[6].position;
+        e2 = vertices[8].position - vertices[6].position;
+        d1 = vertices[7].UVs - vertices[6].UVs;
+        d2 = vertices[8].UVs - vertices[6].UVs;
 
-        float f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
-
-        glm::vec3 tan, bitan;
+        f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
 
         tan.x = f * (d2.y * e1.x - d1.y * e2.x);
         tan.y = f * (d2.y * e1.y - d1.y * e2.y);
@@ -277,28 +281,28 @@ namespace Rendering
         //---------------------------------------------------------
         //Vertex 1
         vertices[12].position = glm::vec3( 1.0f,  1.0f, 1.0f);
-        vertices[12].UVs = glm::vec2(0.0f, 1.0f);
+        vertices[12].UVs = glm::vec2(0.0f, 0.0f);
         vertices[12].normals = glm::vec3(0.0f, 1.0f, 0.0f);
         vertices[12].color = m_Color;
         //Vertex 2
         vertices[13].position = glm::vec3(-1.0f,  1.0f, 1.0f);
-        vertices[13].UVs = glm::vec2(0.0f, 0.0f);
+        vertices[13].UVs = glm::vec2(1.0f, 0.0f);
         vertices[13].normals = glm::vec3(0.0f, 1.0f, 0.0f);
         vertices[13].color = m_Color;
         //Vertex 3
-        vertices[14].position = glm::vec3( 1.0f, 1.0f, -1.0f);
-        vertices[14].UVs = glm::vec2(1.0f, 0.0f);
+        vertices[14].position = glm::vec3(-1.0f, 1.0f, -1.0f);
+        vertices[14].UVs = glm::vec2(1.0f, 1.0f);
         vertices[14].normals = glm::vec3(0.0f, 1.0f, 0.0f);
         vertices[14].color = m_Color;
 
         //Vertex 4
         vertices[15].position = glm::vec3(1.0f,  1.0f, 1.0f);
-        vertices[15].UVs = glm::vec2(0.0f, 1.0f);
+        vertices[15].UVs = glm::vec2(0.0f, 0.0f);
         vertices[15].normals = glm::vec3(0.0f, 1.0f, 0.0f);
         vertices[15].color = m_Color;
         //Vertex 5
         vertices[16].position = glm::vec3( 1.0f, 1.0f, -1.0f);
-        vertices[16].UVs = glm::vec2(1.0f, 0.0f);
+        vertices[16].UVs = glm::vec2(0.0f, 1.0f);
         vertices[16].normals = glm::vec3(0.0f, 1.0f, 0.0f);
         vertices[16].color = m_Color;
         //Vertex 6
@@ -308,14 +312,12 @@ namespace Rendering
         vertices[17].color = m_Color;
 
         //TRIANGLE 1
-        glm::vec3 e1 = vertices[13].position - vertices[12].position;
-        glm::vec3 e2 = vertices[14].position - vertices[12].position;
-        glm::vec2 d1 = vertices[13].UVs - vertices[12].UVs;
-        glm::vec2 d2 = vertices[14].UVs - vertices[12].UVs;
+        e1 = vertices[13].position - vertices[12].position;
+        e2 = vertices[14].position - vertices[12].position;
+        d1 = vertices[13].UVs - vertices[12].UVs;
+        d2 = vertices[14].UVs - vertices[12].UVs;
 
-        float f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
-
-        glm::vec3 tan, bitan;
+        f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
 
         tan.x = f * (d2.y * e1.x - d1.y * e2.x);
         tan.y = f * (d2.y * e1.y - d1.y * e2.y);
@@ -364,28 +366,28 @@ namespace Rendering
         //---------------------------------------------------------
         //Vertex 1
         vertices[18].position = glm::vec3( 1.0f,  -1.0f, 1.0f);
-        vertices[18].UVs = glm::vec2(0.0f, 1.0f);
+        vertices[18].UVs = glm::vec2(0.0f, 0.0f);
         vertices[18].normals = glm::vec3(0.0f, -1.0f, 0.0f);
         vertices[18].color = m_Color;
         //Vertex 2
         vertices[19].position = glm::vec3(-1.0f,  -1.0f, 1.0f);
-        vertices[19].UVs = glm::vec2(0.0f, 0.0f);
+        vertices[19].UVs = glm::vec2(1.0f, 0.0f);
         vertices[19].normals = glm::vec3(0.0f, -1.0f, 0.0f);
         vertices[19].color = m_Color;
         //Vertex 3
-        vertices[20].position = glm::vec3( 1.0f, -1.0f, -1.0f);
-        vertices[20].UVs = glm::vec2(1.0f, 0.0f);
+        vertices[20].position = glm::vec3(-1.0f, -1.0f, -1.0f);
+        vertices[20].UVs = glm::vec2(1.0f, 1.0f);
         vertices[20].normals = glm::vec3(0.0f, -1.0f, 0.0f);
         vertices[20].color = m_Color;
 
         //Vertex 4
         vertices[21].position = glm::vec3(1.0f,  -1.0f, 1.0f);
-        vertices[21].UVs = glm::vec2(0.0f, 1.0f);
+        vertices[21].UVs = glm::vec2(0.0f, 0.0f);
         vertices[21].normals = glm::vec3(0.0f, -1.0f, 0.0f);
         vertices[21].color = m_Color;
         //Vertex 5
         vertices[22].position = glm::vec3( 1.0f, -1.0f, -1.0f);
-        vertices[22].UVs = glm::vec2(1.0f, 0.0f);
+        vertices[22].UVs = glm::vec2(0.0f, 1.0f);
         vertices[22].normals = glm::vec3(0.0f, -1.0f, 0.0f);
         vertices[22].color = m_Color;
         //Vertex 6
@@ -395,14 +397,12 @@ namespace Rendering
         vertices[23].color = m_Color;
 
         //TRIANGLE 1
-        glm::vec3 e1 = vertices[19].position - vertices[18].position;
-        glm::vec3 e2 = vertices[20].position - vertices[18].position;
-        glm::vec2 d1 = vertices[19].UVs - vertices[18].UVs;
-        glm::vec2 d2 = vertices[20].UVs - vertices[18].UVs;
+        e1 = vertices[19].position - vertices[18].position;
+        e2 = vertices[20].position - vertices[18].position;
+        d1 = vertices[19].UVs - vertices[18].UVs;
+        d2 = vertices[20].UVs - vertices[18].UVs;
 
-        float f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
-
-        glm::vec3 tan, bitan;
+        f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
 
         tan.x = f * (d2.y * e1.x - d1.y * e2.x);
         tan.y = f * (d2.y * e1.y - d1.y * e2.y);
@@ -451,28 +451,28 @@ namespace Rendering
         //---------------------------------------------------------
         //Vertex 1
         vertices[24].position = glm::vec3( 1.0f,  -1.0f, 1.0f);
-        vertices[24].UVs = glm::vec2(0.0f, 1.0f);
+        vertices[24].UVs = glm::vec2(0.0f, 0.0f);
         vertices[24].normals = glm::vec3(1.0f, 0.0f, 0.0f);
         vertices[24].color = m_Color;
         //Vertex 2
         vertices[25].position = glm::vec3(1.0f,  1.0f, 1.0f);
-        vertices[25].UVs = glm::vec2(0.0f, 0.0f);
+        vertices[25].UVs = glm::vec2(1.0f, 0.0f);
         vertices[25].normals = glm::vec3(1.0f, 0.0f, 0.0f);
         vertices[25].color = m_Color;
         //Vertex 3
         vertices[26].position = glm::vec3( 1.0f, 1.0f, -1.0f);
-        vertices[26].UVs = glm::vec2(1.0f, 0.0f);
+        vertices[26].UVs = glm::vec2(1.0f, 1.0f);
         vertices[26].normals = glm::vec3(1.0f, 0.0f, 0.0f);
         vertices[26].color = m_Color;
 
         //Vertex 4
         vertices[27].position = glm::vec3(1.0f,  -1.0f, 1.0f);
-        vertices[27].UVs = glm::vec2(0.0f, 1.0f);
+        vertices[27].UVs = glm::vec2(0.0f, 0.0f);
         vertices[27].normals = glm::vec3(1.0f, 0.0f, 0.0f);
         vertices[27].color = m_Color;
         //Vertex 5
         vertices[28].position = glm::vec3( 1.0f, -1.0f, -1.0f);
-        vertices[28].UVs = glm::vec2(1.0f, 0.0f);
+        vertices[28].UVs = glm::vec2(0.0f, 1.0f);
         vertices[28].normals = glm::vec3(1.0f, 0.0f, 0.0f);
         vertices[28].color = m_Color;
         //Vertex 6
@@ -482,14 +482,12 @@ namespace Rendering
         vertices[29].color = m_Color;
 
         //TRIANGLE 1
-        glm::vec3 e1 = vertices[25].position - vertices[24].position;
-        glm::vec3 e2 = vertices[26].position - vertices[24].position;
-        glm::vec2 d1 = vertices[25].UVs - vertices[24].UVs;
-        glm::vec2 d2 = vertices[26].UVs - vertices[24].UVs;
+        e1 = vertices[25].position - vertices[24].position;
+        e2 = vertices[26].position - vertices[24].position;
+        d1 = vertices[25].UVs - vertices[24].UVs;
+        d2 = vertices[26].UVs - vertices[24].UVs;
 
-        float f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
-
-        glm::vec3 tan, bitan;
+        f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
 
         tan.x = f * (d2.y * e1.x - d1.y * e2.x);
         tan.y = f * (d2.y * e1.y - d1.y * e2.y);
@@ -538,28 +536,28 @@ namespace Rendering
         //---------------------------------------------------------
         //Vertex 1
         vertices[30].position = glm::vec3(-1.0f,  -1.0f, 1.0f);
-        vertices[30].UVs = glm::vec2(0.0f, 1.0f);
+        vertices[30].UVs = glm::vec2(0.0f, 0.0f);
         vertices[30].normals = glm::vec3(-1.0f, 0.0f, 0.0f);
         vertices[30].color = m_Color;
         //Vertex 2
         vertices[31].position = glm::vec3(-1.0f,  1.0f, 1.0f);
-        vertices[31].UVs = glm::vec2(0.0f, 0.0f);
+        vertices[31].UVs = glm::vec2(1.0f, 0.0f);
         vertices[31].normals = glm::vec3(-1.0f, 0.0f, 0.0f);
         vertices[31].color = m_Color;
         //Vertex 3
         vertices[32].position = glm::vec3(-1.0f, 1.0f, -1.0f);
-        vertices[32].UVs = glm::vec2(1.0f, 0.0f);
+        vertices[32].UVs = glm::vec2(1.0f, 1.0f);
         vertices[32].normals = glm::vec3(-1.0f, 0.0f, 0.0f);
         vertices[32].color = m_Color;
 
         //Vertex 4
         vertices[33].position = glm::vec3(-1.0f,  -1.0f, 1.0f);
-        vertices[33].UVs = glm::vec2(0.0f, 1.0f);
+        vertices[33].UVs = glm::vec2(0.0f, 0.0f);
         vertices[33].normals = glm::vec3(-1.0f, 0.0f, 0.0f);
         vertices[33].color = m_Color;
         //Vertex 5
         vertices[34].position = glm::vec3(-1.0f, -1.0f, -1.0f);
-        vertices[34].UVs = glm::vec2(1.0f, 0.0f);
+        vertices[34].UVs = glm::vec2(0.0f, 1.0f);
         vertices[34].normals = glm::vec3(-1.0f, 0.0f, 0.0f);
         vertices[34].color = m_Color;
         //Vertex 6
@@ -569,14 +567,12 @@ namespace Rendering
         vertices[35].color = m_Color;
 
         //TRIANGLE 1
-        glm::vec3 e1 = vertices[31].position - vertices[30].position;
-        glm::vec3 e2 = vertices[32].position - vertices[30].position;
-        glm::vec2 d1 = vertices[31].UVs - vertices[30].UVs;
-        glm::vec2 d2 = vertices[32].UVs - vertices[30].UVs;
+        e1 = vertices[31].position - vertices[30].position;
+        e2 = vertices[32].position - vertices[30].position;
+        d1 = vertices[31].UVs - vertices[30].UVs;
+        d2 = vertices[32].UVs - vertices[30].UVs;
 
-        float f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
-
-        glm::vec3 tan, bitan;
+        f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
 
         tan.x = f * (d2.y * e1.x - d1.y * e2.x);
         tan.y = f * (d2.y * e1.y - d1.y * e2.y);
