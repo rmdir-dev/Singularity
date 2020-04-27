@@ -95,7 +95,64 @@ namespace Manager
 
     uint ObjectManager::AddCube(glm::mat4* modelMatrix) 
     {
-        
+        if(SearchModel("Cube"))
+        {
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(shaderManager.GetBestShader(0x00));
+        }
+        m_Renderables.push_back({ "Cube", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddCube(const char* diffuse, const char* specular, const char* normal, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Cube"))
+        {
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(textureManager.LoadTexture(diffuse), 
+            textureManager.LoadTexture(specular), textureManager.LoadTexture(normal), shader);
+        }
+        m_Renderables.push_back({ "Cube", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddCube(const char* diffuse, const char* specular, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Cube"))
+        {
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(textureManager.LoadTexture(diffuse), 
+            textureManager.LoadTexture(specular), shader);
+        }
+        m_Renderables.push_back({ "Cube", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddCube(const char* diffuse, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Cube"))
+        {
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(textureManager.LoadTexture(diffuse), shader);
+        }
+        m_Renderables.push_back({ "Cube", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddCube(const glm::vec4& color, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Cube"))
+        {
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(color, shader);
+        }
+        m_Renderables.push_back({ "Cube", modelMatrix });
+        return m_Renderables.size() - 1;
+    }
+
+    uint ObjectManager::AddCube(const Material& material, glm::mat4* modelMatrix, std::shared_ptr<Rendering::Shader> shader) 
+    {
+        if(SearchModel("Cube"))
+        {
+            m_Objects["Cube"] = std::make_shared<Rendering::Cube>(material, shader);
+        }
+        m_Renderables.push_back({ "Cube", modelMatrix });
+        return m_Renderables.size() - 1;
     }
 
     void ObjectManager::SetView(const glm::mat4& view) 

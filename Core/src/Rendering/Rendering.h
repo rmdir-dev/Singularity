@@ -9,7 +9,7 @@
 //MODELS
 #include "Models/Mesh.h"
 #include "Models/Model.h"
-//#include "Models/Cube.h"
+#include "Models/Cube.h"
 #include "Models/Quad.h"
 #include "Models/iRenderable.h"
 
