@@ -32,7 +32,6 @@ namespace Rendering
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
     private:
-        bool b_HasMaterial;
         
     };
 }
