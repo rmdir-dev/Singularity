@@ -73,7 +73,7 @@ namespace Layer
             1.0f,
             16
         };
-        m_ObjMan.AddQuad("Assets/container2.png", "Assets/container2_specular.png", &model, m_Shader);
+        m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &model, m_Shader);
 
         m_Shader->Bind();
         m_Shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
