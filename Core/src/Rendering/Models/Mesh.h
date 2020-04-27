@@ -16,14 +16,12 @@ namespace Rendering
             std::shared_ptr<Rendering::Texture> specular,
             std::shared_ptr<Rendering::Texture> normal,
             std::shared_ptr<Rendering::Shader> shader,
-            Material material,
-            bool hasTexture = true);
+            Material material);
 
         Mesh(const std::vector<Rendering::VertexLayout>& vertices, 
             const std::vector<uint>& indices, 
             std::shared_ptr<Rendering::Shader> shader,
-            Material material,
-            bool hasTexture = false);
+            Material material);
         
         Mesh(const Mesh& mesh);
 

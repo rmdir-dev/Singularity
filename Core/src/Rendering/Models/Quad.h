@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Mesh.h"
 #include "iRenderable.h"
 
 namespace Rendering

@@ -28,7 +28,6 @@ namespace Window
 
     Window::~Window() 
     {
-        delete m_Window;
     }
 
     void Window::onMainLoop() 

@@ -9,34 +9,29 @@ namespace Rendering
                 std::shared_ptr<Rendering::Texture> specular,
                 std::shared_ptr<Rendering::Texture> normal,
                 std::shared_ptr<Rendering::Shader> shader,
-                Material material,
-                bool hasTexture) 
+                Material material)
+        : iRenderable(shader, material, glm::vec4(1.0f), true, TEX_DIFFUSE | TEX_SPECULAR | TEX_NORMAL)
     {
         m_Diffuse = diffuse;
         m_Normal = normal;
         m_Specular = specular;
-        b_HasTexture = hasTexture;
-        m_Material = material;
-        m_Shader = shader;
         SetupMesh(vertices, indices);
     }
 
     Mesh::Mesh(const std::vector<Rendering::VertexLayout>& vertices, 
                 const std::vector<uint>& indices, 
                 std::shared_ptr<Rendering::Shader> shader,
-                Material material,
-                bool hasTexture) 
+                Material material) 
+        : iRenderable(shader, material, glm::vec4(1.0f), true, 0x00)
     {
-        b_HasTexture = hasTexture;
-        m_Shader = shader;
-        m_Material = material;
         SetupMesh(vertices, indices);
     }
 
     Mesh::Mesh(const Mesh& mesh) 
     {
+        //TODO
         m_Shader = mesh.m_Shader;
-        b_HasTexture = mesh.b_HasTexture;
+        b_HasMaterial = mesh.b_HasMaterial;
         m_Diffuse = mesh.m_Diffuse;
         m_Normal = mesh.m_Normal;
         m_Specular = mesh.m_Specular;
@@ -52,22 +47,36 @@ namespace Rendering
     void Mesh::Draw() 
     {
         m_Shader->Bind();
-        if(b_HasTexture)
-        {
-            m_Diffuse->Bind(0);
-            m_Specular->Bind(1);
-            m_Normal->Bind(2);
-            m_Shader->SetUniform1i("material.diffuse", 0);
-            m_Shader->SetUniform1i("material.specular", 1);
-            m_Shader->SetUniform1i("material.normal", 2);
-        } else 
-        {
-            m_Shader->SetUniform3f("material.diffuse", m_Material.diffuse);
-            m_Shader->SetUniform3f("material.specular", m_Material.specular);
-            m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
+        if(b_HasMaterial)
+        {   
+            if(m_ActiveTextures.types & TEX_DIFFUSE)
+            {
+                m_Diffuse->Bind(0);
+                m_Shader->SetUniform1i("material.diffuse", 0);
+            } else 
+            {
+                m_Shader->SetUniform3f("material.ambient", m_Material.ambient);
+                m_Shader->SetUniform3f("material.diffuse", m_Material.diffuse);
+            }
+
+            if(m_ActiveTextures.types & TEX_SPECULAR)
+            {
+                m_Specular->Bind(1);
+                m_Shader->SetUniform1i("material.specular", 1);
+            } else 
+            {
+                m_Shader->SetUniform3f("material.specular", m_Material.specular);
+            }
+
+            if(m_ActiveTextures.types & TEX_NORMAL)
+            {
+                m_Normal->Bind(2);
+                m_Shader->SetUniform1i("material.normal", 2);
+            }
+            
             m_Shader->SetUniform1f("material.opacity", m_Material.opacity); 
-        }  
-        m_Shader->SetUniform1f("material.shininess", m_Material.shininess);        
+            m_Shader->SetUniform1f("material.shininess", m_Material.shininess);  
+        }    
 
         glBindVertexArray(VAO);
 
@@ -92,7 +101,7 @@ namespace Rendering
 
     void Mesh::HasTexture(const bool& hasTexture) 
     {
-        b_HasTexture = hasTexture;
+        b_HasMaterial = hasTexture;
     }
 
     void Mesh::SetupMesh(const std::vector<Rendering::VertexLayout>& vertices, 
