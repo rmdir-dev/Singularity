@@ -36,9 +36,9 @@ namespace Manager
                             }";
         m_Shaders["Default"] = std::make_shared<Rendering::Shader>(vert, frag);
         m_Shaders["BasicShader"] = std::make_shared<Rendering::Shader>("Assets/BasicShader");
-        m_Shaders["BasicTextureD"] = std::make_shared<Rendering::Shader>("Assets/BasicTextureD");
-        m_Shaders["BasicTextureDS"] = std::make_shared<Rendering::Shader>("Assets/BasicTextureDS");
-        m_Shaders["BasicTextureDSN"] = std::make_shared<Rendering::Shader>("Assets/BasicTextureDSN");
+        m_Shaders["BasicTextureD"] = std::make_shared<Rendering::Shader>("Assets/TextureTesting/BasicTextureD");
+        m_Shaders["BasicTextureDS"] = std::make_shared<Rendering::Shader>("Assets/TextureTesting/BasicTextureDS");
+        m_Shaders["BasicTextureDSN"] = std::make_shared<Rendering::Shader>("Assets/TextureTesting/BasicTextureDSN");
     }
 
     ShaderManager::~ShaderManager() 
@@ -55,7 +55,7 @@ namespace Manager
     std::shared_ptr<Rendering::Shader> ShaderManager::LoadShader(const char* filePath) 
     {
         std::string name = filePath;
-        name = name.substr(name.find('/') + 1, name.length());
+        name = name.substr(name.find_last_of('/') + 1, name.length());
         
         std::unordered_map<std::string, std::shared_ptr<Rendering::Shader>>::const_iterator got = m_Shaders.find(name);
         if(got == m_Shaders.end())
