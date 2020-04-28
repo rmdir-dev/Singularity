@@ -51,7 +51,10 @@ namespace Rendering
         //        FUNCTIONS
         //!!!!!!!!!!!!!!!!!!!!!!!!!!
     public:
+        Lights();
         Lights(const glm::vec3& position);
+        Lights(float intensity);
+        Lights(float intensity, const glm::vec3& color);
         Lights(const glm::vec3& position, float intensity);
         Lights(const glm::vec3& position, const glm::vec3& color);
         Lights(const glm::vec3& position, const glm::vec3& color, float intensity);

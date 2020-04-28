@@ -106,6 +106,7 @@ namespace Layer
 
         //Test Light
         std::shared_ptr<Rendering::Lights> m_Light;
+        std::shared_ptr<Rendering::DirectionalLight> m_DLight;
 
         //TEST MVP matrix
         glm::mat4 model;

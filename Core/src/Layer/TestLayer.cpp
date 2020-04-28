@@ -12,15 +12,15 @@ namespace Layer
     {
         m_ShaderManager = std::make_shared<Manager::ShaderManager>();
         m_ObjMan = Manager::ObjectManager(m_ShaderManager);
-        cube.shader = m_ShaderManager->LoadShader("Assets/BasicTextureDS");
+        cube.shader = m_ShaderManager->LoadShader("Assets/BasicTextureDS_Dir");
         m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
-        m_Light = std::make_shared<Rendering::Lights>(glm::vec3(1.0f, 0.0, 2.0f));
-        m_Light->SetShader(m_LightShader);
-        m_Light->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
-        m_Light->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_Light->m_Ambiant = glm::vec3(0.2f)    * m_Light->m_Color;
-        m_Light->m_Diffuse = glm::vec3(0.5f)    * m_Light->m_Color;
-        m_Light->m_Specular = glm::vec3(1.0f)   * m_Light->m_Color;
+        m_DLight = std::make_shared<Rendering::DirectionalLight>();
+        m_DLight->SetShader(m_LightShader);
+        m_DLight->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
+        m_DLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_DLight->m_Ambiant = glm::vec3(0.2f)    * m_DLight->m_Color;
+        m_DLight->m_Diffuse = glm::vec3(0.5f)    * m_DLight->m_Color;
+        m_DLight->m_Specular = glm::vec3(1.0f)   * m_DLight->m_Color;
 
         //CAMERA SETUP
         cameraPos       = glm::vec3(0.0f, 0.15f,  5.0f);
@@ -78,11 +78,12 @@ namespace Layer
         m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube.model, cube.shader);
 
         cube.shader->Bind();
-        cube.shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
-        cube.shader->SetUniform3f("diffuseLight.color", m_Light->m_Color);
-        cube.shader->SetUniform3f("diffuseLight.ambient", m_Light->m_Ambiant);
-        cube.shader->SetUniform3f("diffuseLight.diffuse", m_Light->m_Diffuse);
-        cube.shader->SetUniform3f("diffuseLight.specular", m_Light->m_Specular);
+        //cube.shader->SetUniform3f("diffuseLight.position", m_DLight->m_Position);
+        cube.shader->SetUniform3f("directionalLight.direction", m_DLight->m_Direction);
+        cube.shader->SetUniform3f("directionalLight.color", m_DLight->m_Color);
+        cube.shader->SetUniform3f("directionalLight.ambient", m_DLight->m_Ambiant);
+        cube.shader->SetUniform3f("directionalLight.diffuse", m_DLight->m_Diffuse);
+        cube.shader->SetUniform3f("directionalLight.specular", m_DLight->m_Specular);
         //cube.shader->SetUniform1f("diffuseLight.intensity", m_Light->m_Intensity);
         cube.shader->Unbind();
 
@@ -100,9 +101,9 @@ namespace Layer
         UpdateMouvement(deltaTime);
         cube.shader->Bind();
         //Light translation
-        sinMov += 0.001f;
-        m_Light->Translate(glm::vec3(0.0f, (sin(sinMov) * 5.0f)* deltaTime, 0.0f));
-        cube.shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
+        //sinMov += 0.001f;
+        //m_Light->Translate(glm::vec3(0.0f, (sin(sinMov) * 5.0f)* deltaTime, 0.0f));
+        //cube.shader->SetUniform3f("diffuseLight.position", m_Light->m_Position);
         if(sinMov == 400.0f)
         {
             CORE_INFO((float) (sin(sinMov)));
@@ -119,7 +120,7 @@ namespace Layer
         //PROJECTION AND VIEW NOT SETS !!!!
         m_ObjMan.Render();
 
-        m_Light->Draw();
+        m_DLight->Draw();
     }
 
     void TestLayer::UpdateView() 

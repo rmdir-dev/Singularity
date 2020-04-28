@@ -5,8 +5,26 @@
 
 namespace Rendering
 {
+    Lights::Lights() 
+        : m_Position(glm::vec3(0.0f)), m_Color(glm::vec3(1.0f)), m_Intensity(1.0f)
+    {
+        SetupLightBox();
+    }
+
     Lights::Lights(const glm::vec3& position)
         : m_Position(position), m_Color(glm::vec3(1.0f)), m_Intensity(1.0f)
+    {
+        SetupLightBox();
+    }
+
+    Lights::Lights(float intensity, const glm::vec3& color) 
+        : m_Color(color), m_Intensity(intensity)
+    {
+        SetupLightBox();
+    }
+
+    Lights::Lights(float intensity) 
+        : m_Color(glm::vec3(1.0f)), m_Intensity(intensity)
     {
         SetupLightBox();
     }

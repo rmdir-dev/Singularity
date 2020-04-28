@@ -5,6 +5,7 @@
 
 //LIGHTS
 #include "Lights/Lights.h"
+#include "Lights/DirectionalLight.h"
 
 //MODELS
 #include "Models/Mesh.h"
