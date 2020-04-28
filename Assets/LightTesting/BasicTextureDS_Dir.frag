@@ -4,7 +4,7 @@
 
 out vec4 outFragColor;
 
-struct DiffuseLight
+struct DirectionalLight
 {
 	vec3 position;
     vec3 direction;
@@ -26,7 +26,7 @@ struct Material
 
 uniform Material material;
 
-uniform DiffuseLight directionalLight;
+uniform DirectionalLight directionalLight;
 uniform vec3 cameraPos;
 
 in vec4 vertColor;

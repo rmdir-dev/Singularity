@@ -107,6 +107,7 @@ namespace Layer
         //Test Light
         std::shared_ptr<Rendering::Lights> m_Light;
         std::shared_ptr<Rendering::DirectionalLight> m_DLight;
+        std::shared_ptr<Rendering::PointLight> m_PLight;
 
         //TEST MVP matrix
         glm::mat4 model;
@@ -138,6 +139,7 @@ namespace Layer
 
         //Test objects struct
         Object cube;
+        Object cube2;
 
     public:
     };

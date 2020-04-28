@@ -12,15 +12,16 @@ namespace Layer
     {
         m_ShaderManager = std::make_shared<Manager::ShaderManager>();
         m_ObjMan = Manager::ObjectManager(m_ShaderManager);
-        cube.shader = m_ShaderManager->LoadShader("Assets/BasicTextureDS_Dir");
+        cube.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_Point");
+        cube2.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_Point");
         m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
-        m_DLight = std::make_shared<Rendering::DirectionalLight>();
-        m_DLight->SetShader(m_LightShader);
-        m_DLight->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
-        m_DLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_DLight->m_Ambiant = glm::vec3(0.2f)    * m_DLight->m_Color;
-        m_DLight->m_Diffuse = glm::vec3(0.5f)    * m_DLight->m_Color;
-        m_DLight->m_Specular = glm::vec3(1.0f)   * m_DLight->m_Color;
+        m_PLight = std::make_shared<Rendering::PointLight>(glm::vec3(2.0f));
+        m_PLight->SetShader(m_LightShader);
+        m_PLight->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
+        m_PLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_PLight->m_Ambiant = glm::vec3(0.2f)    * m_PLight->m_Color;
+        m_PLight->m_Diffuse = glm::vec3(0.5f)    * m_PLight->m_Color;
+        m_PLight->m_Specular = glm::vec3(1.0f)   * m_PLight->m_Color;
 
         //CAMERA SETUP
         cameraPos       = glm::vec3(0.0f, 0.15f,  5.0f);
@@ -39,6 +40,8 @@ namespace Layer
         cube.shader->Bind();       
 
         cube.model = glm::mat4(1.0f);
+        cube2.model = glm::mat4(1.0f);
+        cube2.model = glm::translate(cube2.model, glm::vec3(-4.0f, 0.0f, 0.0f));
         //model = glm::translate(model, glm::vec3(0.0f, -1.4f, 0.0f)); // translate it down so it's at the center of the scene
         //model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
         projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 250.0f);
@@ -76,14 +79,18 @@ namespace Layer
             16
         };
         m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube.model, cube.shader);
+        m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube2.model, cube2.shader);
 
         cube.shader->Bind();
-        //cube.shader->SetUniform3f("diffuseLight.position", m_DLight->m_Position);
-        cube.shader->SetUniform3f("directionalLight.direction", m_DLight->m_Direction);
-        cube.shader->SetUniform3f("directionalLight.color", m_DLight->m_Color);
-        cube.shader->SetUniform3f("directionalLight.ambient", m_DLight->m_Ambiant);
-        cube.shader->SetUniform3f("directionalLight.diffuse", m_DLight->m_Diffuse);
-        cube.shader->SetUniform3f("directionalLight.specular", m_DLight->m_Specular);
+        //cube.shader->SetUniform3f("diffuseLight.position", m_PLight->m_Position);
+        cube.shader->SetUniform3f("pointLight.position", m_PLight->m_Position);
+        cube.shader->SetUniform1f("pointLight.constant", m_PLight->m_Constant);
+        cube.shader->SetUniform1f("pointLight.linear", m_PLight->m_Linear);
+        cube.shader->SetUniform1f("pointLight.quadratic", m_PLight->m_Quadratic);
+        cube.shader->SetUniform3f("pointLight.color", m_PLight->m_Color);
+        cube.shader->SetUniform3f("pointLight.ambient", m_PLight->m_Ambiant);
+        cube.shader->SetUniform3f("pointLight.diffuse", m_PLight->m_Diffuse);
+        cube.shader->SetUniform3f("pointLight.specular", m_PLight->m_Specular);
         //cube.shader->SetUniform1f("diffuseLight.intensity", m_Light->m_Intensity);
         cube.shader->Unbind();
 
@@ -114,13 +121,14 @@ namespace Layer
         //model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         //ROTATION
         cube.model = glm::rotate(cube.model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+        cube2.model = glm::rotate(cube2.model, (0.5f * deltaTime) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
         //cube.shader->SetUniformMatrix4fv("model", model);
         //m_Model->Draw();
         //cube.shader->Unbind();
         //PROJECTION AND VIEW NOT SETS !!!!
         m_ObjMan.Render();
 
-        m_DLight->Draw();
+        m_PLight->Draw();
     }
 
     void TestLayer::UpdateView() 
