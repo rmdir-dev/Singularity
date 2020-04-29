@@ -15,6 +15,7 @@ namespace Layer
         m_ObjMan = Manager::ObjectManager(m_ShaderManager);
         cube.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_MultiLight");
         cube2.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_MultiLight");
+        //nano.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_MultiLight");
         m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
 
 
@@ -37,8 +38,9 @@ namespace Layer
         cube.model = glm::mat4(1.0f);
         cube2.model = glm::mat4(1.0f);
         cube2.model = glm::translate(cube2.model, glm::vec3(-4.0f, 0.0f, -10.0f));
-        //model = glm::translate(model, glm::vec3(0.0f, -1.4f, 0.0f)); // translate it down so it's at the center of the scene
-        //model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
+        //nano.model = glm::mat4(1.0f);
+        //nano.model = glm::translate(nano.model, glm::vec3(-4.0f, -1.4f, 0.0f));
+        //nano.model = glm::scale(nano.model, glm::vec3(0.2f, 0.2f, 0.2f));     
         projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 250.0f);
 
         cube.shader->SetUniformMatrix4fv("model", cube.model);
@@ -77,6 +79,7 @@ namespace Layer
         };
         m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube.model, cube.shader);
         m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube2.model, cube2.shader);
+        //m_ObjMan.AddModel("Assets/Nano/nanosuit.obj", nano.shader, &nano.model);
 
         m_ObjMan.SetProjection(projection);
         m_ObjMan.SetView(view);

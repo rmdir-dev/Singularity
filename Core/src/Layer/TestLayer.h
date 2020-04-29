@@ -153,6 +153,7 @@ namespace Layer
         //Test objects struct
         Object cube;
         Object cube2;
+        Object nano;
 
         //IMGUI VARIABLES
         bool ImGUI_PLight1 = true;
