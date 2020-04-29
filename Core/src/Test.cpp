@@ -43,12 +43,15 @@ void Test::mainLoop()
     while(Window->IsWindowClose())
     {
         TPoint startTime = HrClock::now();
-        ImGUIRenderBeging();
 
         Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         tl->OnRender(Window->GetDeltaTime());
-        tl->OnImGUIRender();
-        ImGUIRenderEnd();
+        if(ImGUI_Render) 
+        {
+            ImGUIRenderBeging();
+            tl->OnImGUIRender();
+            ImGUIRenderEnd();
+        }
         Window->onMainLoop();
 
         TPoint endTime = HrClock::now();
@@ -136,6 +139,12 @@ bool Test::keyPressEvent(Event::KeyPressed& e)
     if(e.getKeyCode() == SE_KEY_ESCAPE)
     {
         Window->SetWindowClose(true);
+        return true;
+    }
+
+    if(e.getKeyCode() == SE_KEY_F1)
+    {
+        ImGUI_Render = !ImGUI_Render;
         return true;
     }
 

@@ -27,4 +27,6 @@ struct Test{
 
     std::unique_ptr<Window::Window> Window;
     std::unique_ptr<Layer::TestLayer> tl;
+
+    bool ImGUI_Render = false;
 };
