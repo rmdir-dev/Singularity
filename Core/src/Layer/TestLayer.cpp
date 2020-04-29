@@ -12,16 +12,16 @@ namespace Layer
     {
         m_ShaderManager = std::make_shared<Manager::ShaderManager>();
         m_ObjMan = Manager::ObjectManager(m_ShaderManager);
-        cube.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_Point");
-        cube2.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_Point");
+        cube.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_Spot");
+        cube2.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_Spot");
         m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
-        m_PLight = std::make_shared<Rendering::PointLight>(glm::vec3(2.0f));
-        m_PLight->SetShader(m_LightShader);
-        m_PLight->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
-        m_PLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_PLight->m_Ambiant = glm::vec3(0.2f)    * m_PLight->m_Color;
-        m_PLight->m_Diffuse = glm::vec3(0.5f)    * m_PLight->m_Color;
-        m_PLight->m_Specular = glm::vec3(1.0f)   * m_PLight->m_Color;
+        m_SLight = std::make_shared<Rendering::SpotLight>();
+        m_SLight->SetShader(m_LightShader);
+        m_SLight->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
+        m_SLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_SLight->m_Ambiant = glm::vec3(0.2f)    * m_SLight->m_Color;
+        m_SLight->m_Diffuse = glm::vec3(0.5f)    * m_SLight->m_Color;
+        m_SLight->m_Specular = glm::vec3(1.0f)   * m_SLight->m_Color;
 
         //CAMERA SETUP
         cameraPos       = glm::vec3(0.0f, 0.15f,  5.0f);
@@ -29,8 +29,11 @@ namespace Layer
         cameraUp        = glm::vec3(0.0f, 1.0f,  0.0f);
         cameraSpeed = 0.05f;
         sensitivity = 0.1f;
-        m_Yaw = -84.0f;
+        m_Yaw = -90.0f;
         m_Pitch = 0.0f;
+
+        m_SLight->m_Direction = cameraFront;
+        m_SLight->m_Position = cameraPos;
 
         mvt.input = 0x00;
         sinMov = 0.0f;
@@ -82,16 +85,13 @@ namespace Layer
         m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube2.model, cube2.shader);
 
         cube.shader->Bind();
-        //cube.shader->SetUniform3f("diffuseLight.position", m_PLight->m_Position);
-        cube.shader->SetUniform3f("pointLight.position", m_PLight->m_Position);
-        cube.shader->SetUniform1f("pointLight.constant", m_PLight->m_Constant);
-        cube.shader->SetUniform1f("pointLight.linear", m_PLight->m_Linear);
-        cube.shader->SetUniform1f("pointLight.quadratic", m_PLight->m_Quadratic);
-        cube.shader->SetUniform3f("pointLight.color", m_PLight->m_Color);
-        cube.shader->SetUniform3f("pointLight.ambient", m_PLight->m_Ambiant);
-        cube.shader->SetUniform3f("pointLight.diffuse", m_PLight->m_Diffuse);
-        cube.shader->SetUniform3f("pointLight.specular", m_PLight->m_Specular);
-        //cube.shader->SetUniform1f("diffuseLight.intensity", m_Light->m_Intensity);
+        cube.shader->SetUniform3f("spotLight.position", m_SLight->m_Position);
+        cube.shader->SetUniform3f("spotLight.direction", m_SLight->m_Direction);
+        cube.shader->SetUniform1f("spotLight.cutOff", m_SLight->m_CutOff);
+        cube.shader->SetUniform1f("spotLight.outerCutOff", m_SLight->m_OuterCutOff);
+        cube.shader->SetUniform3f("spotLight.ambient", m_SLight->m_Ambiant);
+        cube.shader->SetUniform3f("spotLight.diffuse", m_SLight->m_Diffuse);
+        cube.shader->SetUniform3f("spotLight.specular", m_SLight->m_Specular);
         cube.shader->Unbind();
 
         m_ObjMan.SetProjection(projection);
@@ -128,7 +128,7 @@ namespace Layer
         //PROJECTION AND VIEW NOT SETS !!!!
         m_ObjMan.Render();
 
-        m_PLight->Draw();
+        m_SLight->Draw();
     }
 
     void TestLayer::UpdateView() 
