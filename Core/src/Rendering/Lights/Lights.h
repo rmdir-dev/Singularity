@@ -65,6 +65,11 @@ namespace Rendering
 
         void SetShader(const std::shared_ptr<Shader> shader);
 
+        /*
+        return if the light is on or off.
+        */
+        uint GetOnOrOff();
+
         void Draw();
 
         void Translate(const glm::vec3& translation);

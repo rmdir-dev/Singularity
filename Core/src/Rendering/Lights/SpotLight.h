@@ -25,6 +25,9 @@ namespace Rendering
     public:
         float m_CutOff;
         float m_OuterCutOff;
+        float m_Constant;
+        float m_Linear;
+        float m_Quadratic;
         glm::vec3 m_Direction;
 
 

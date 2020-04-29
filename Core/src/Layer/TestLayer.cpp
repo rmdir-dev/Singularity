@@ -5,6 +5,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "Utils/Log.h"
 #include "Utils/KeyCodes.h"
+#include "ImGui/imgui.h"
 
 namespace Layer
 {
@@ -12,16 +13,10 @@ namespace Layer
     {
         m_ShaderManager = std::make_shared<Manager::ShaderManager>();
         m_ObjMan = Manager::ObjectManager(m_ShaderManager);
-        cube.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_Spot");
-        cube2.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_Spot");
+        cube.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_MultiLight");
+        cube2.shader = m_ShaderManager->LoadShader("Assets/LightTesting/BasicTextureDS_MultiLight");
         m_LightShader = std::make_shared<Rendering::Shader>("Assets/BoxLightShader");
-        m_SLight = std::make_shared<Rendering::SpotLight>();
-        m_SLight->SetShader(m_LightShader);
-        m_SLight->SetLightSettings(ACTIVATE_LIGHT | VISIBLE_LIGHT_BOX);
-        m_SLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_SLight->m_Ambiant = glm::vec3(0.2f)    * m_SLight->m_Color;
-        m_SLight->m_Diffuse = glm::vec3(0.5f)    * m_SLight->m_Color;
-        m_SLight->m_Specular = glm::vec3(1.0f)   * m_SLight->m_Color;
+
 
         //CAMERA SETUP
         cameraPos       = glm::vec3(0.0f, 0.15f,  5.0f);
@@ -32,9 +27,6 @@ namespace Layer
         m_Yaw = -90.0f;
         m_Pitch = 0.0f;
 
-        m_SLight->m_Direction = cameraFront;
-        m_SLight->m_Position = cameraPos;
-
         mvt.input = 0x00;
         sinMov = 0.0f;
 
@@ -44,7 +36,7 @@ namespace Layer
 
         cube.model = glm::mat4(1.0f);
         cube2.model = glm::mat4(1.0f);
-        cube2.model = glm::translate(cube2.model, glm::vec3(-4.0f, 0.0f, 0.0f));
+        cube2.model = glm::translate(cube2.model, glm::vec3(-4.0f, 0.0f, -10.0f));
         //model = glm::translate(model, glm::vec3(0.0f, -1.4f, 0.0f)); // translate it down so it's at the center of the scene
         //model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down      
         projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 250.0f);
@@ -60,6 +52,8 @@ namespace Layer
         m_LightShader->Unbind();       
 
         rotation = 0.0f;
+
+        CreateLights();
     }
 
 
@@ -84,16 +78,6 @@ namespace Layer
         m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube.model, cube.shader);
         m_ObjMan.AddCube("Assets/container2.png", "Assets/container2_specular.png", &cube2.model, cube2.shader);
 
-        cube.shader->Bind();
-        cube.shader->SetUniform3f("spotLight.position", m_SLight->m_Position);
-        cube.shader->SetUniform3f("spotLight.direction", m_SLight->m_Direction);
-        cube.shader->SetUniform1f("spotLight.cutOff", m_SLight->m_CutOff);
-        cube.shader->SetUniform1f("spotLight.outerCutOff", m_SLight->m_OuterCutOff);
-        cube.shader->SetUniform3f("spotLight.ambient", m_SLight->m_Ambiant);
-        cube.shader->SetUniform3f("spotLight.diffuse", m_SLight->m_Diffuse);
-        cube.shader->SetUniform3f("spotLight.specular", m_SLight->m_Specular);
-        cube.shader->Unbind();
-
         m_ObjMan.SetProjection(projection);
         m_ObjMan.SetView(view);
     }
@@ -106,6 +90,7 @@ namespace Layer
     void TestLayer::OnRender(const float& deltaTime) 
     {
         UpdateMouvement(deltaTime);
+        UpdateLights(deltaTime);
         cube.shader->Bind();
         //Light translation
         //sinMov += 0.001f;
@@ -187,9 +172,224 @@ namespace Layer
 
     void TestLayer::OnImGUIRender() 
     {
-        
+        if(ImGui::Button("Point Light 1"))
+        {
+            if(ImGUI_PLight1)
+            {
+                cube.shader->Bind();
+                ImGUI_PLight1 = false;
+                m_PLight1->SetLightSettings(0x00);
+                cube.shader->SetUniform1i("pointLight[0].on", m_PLight1->GetOnOrOff());  
+                cube.shader->Unbind();
+            } else 
+            {
+                cube.shader->Bind();
+                ImGUI_PLight1 = true;
+                m_PLight1->SetLightSettings(ACTIVATE_LIGHT);
+                cube.shader->SetUniform1i("pointLight[0].on", m_PLight1->GetOnOrOff());  
+                cube.shader->Unbind();
+            }
+        }
+        if(ImGui::Button("Point Light 2"))
+        {
+            if(ImGUI_PLight2)
+            {
+                cube.shader->Bind();
+                ImGUI_PLight2 = false;
+                m_PLight2->SetLightSettings(0x00);
+                cube.shader->SetUniform1i("pointLight[1].on", m_PLight2->GetOnOrOff());   
+                cube.shader->Unbind();
+            } else 
+            {
+                cube.shader->Bind();
+                ImGUI_PLight2 = true;
+                m_PLight2->SetLightSettings(ACTIVATE_LIGHT);
+                cube.shader->SetUniform1i("pointLight[1].on", m_PLight2->GetOnOrOff()); 
+                cube.shader->Unbind(); 
+            }
+        }
+        if(ImGui::Button("Point Light 3"))
+        {
+            if(ImGUI_PLight3)
+            {
+                cube.shader->Bind();
+                ImGUI_PLight3 = false;
+                m_PLight3->SetLightSettings(0x00);
+                cube.shader->SetUniform1i("pointLight[2].on", m_PLight3->GetOnOrOff()); 
+                cube.shader->Unbind();  
+            } else 
+            {
+                cube.shader->Bind();
+                ImGUI_PLight3 = true;
+                m_PLight3->SetLightSettings(ACTIVATE_LIGHT);
+                cube.shader->SetUniform1i("pointLight[2].on", m_PLight3->GetOnOrOff()); 
+                cube.shader->Unbind(); 
+            }
+        }
+        if(ImGui::Button("Point Light 4"))
+        {
+            if(ImGUI_PLight4)
+            {
+                cube.shader->Bind();
+                ImGUI_PLight4 = false;
+                m_PLight4->SetLightSettings(0x00);
+                cube.shader->SetUniform1i("pointLight[3].on", m_PLight4->GetOnOrOff()); 
+                cube.shader->Unbind();  
+            } else 
+            {
+                cube.shader->Bind();
+                ImGUI_PLight4 = true;
+                m_PLight4->SetLightSettings(ACTIVATE_LIGHT);
+                cube.shader->SetUniform1i("pointLight[3].on", m_PLight4->GetOnOrOff()); 
+                cube.shader->Unbind();                  
+            }
+        }
+        if(ImGui::Button("Dir Light"))
+        {
+            if(ImGUI_DLight)
+            {
+                cube.shader->Bind();
+                ImGUI_DLight = false;
+                m_DLight->SetLightSettings(0x00);
+                cube.shader->SetUniform1i("directionalLight.on", m_DLight->GetOnOrOff());  
+                cube.shader->Unbind();   
+            } else 
+            {
+                cube.shader->Bind();
+                ImGUI_DLight = true;
+                m_DLight->SetLightSettings(ACTIVATE_LIGHT);
+                cube.shader->SetUniform1i("directionalLight.on", m_DLight->GetOnOrOff());  
+                cube.shader->Unbind();  
+            }
+        }
+        cube.shader->Unbind(); 
     }
-    
+
+    void TestLayer::CreateLights() 
+    {
+        cube.shader->Bind();
+
+        //SPOT LIGHT
+        m_SLight = std::make_shared<Rendering::SpotLight>();
+        m_SLight->SetShader(m_LightShader);
+        m_SLight->SetLightSettings(ACTIVATE_LIGHT);
+        m_SLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_SLight->m_Ambiant = glm::vec3(0.1f)    * m_SLight->m_Color;
+        m_SLight->m_Diffuse = glm::vec3(0.5f)    * m_SLight->m_Color;
+        m_SLight->m_Specular = glm::vec3(1.0f)   * m_SLight->m_Color;
+        m_SLight->m_Direction = cameraFront;
+        m_SLight->m_Position = cameraPos;
+        
+        cube.shader->SetUniform3f("spotLight.position",         cameraPos);
+        cube.shader->SetUniform3f("spotLight.direction",        cameraFront);
+        cube.shader->SetUniform1f("spotLight.cutOff",           m_SLight->m_CutOff);
+        cube.shader->SetUniform1f("spotLight.outerCutOff",      m_SLight->m_OuterCutOff);
+        cube.shader->SetUniform1f("spotLight.constant",         m_SLight->m_Constant);
+        cube.shader->SetUniform1f("spotLight.linear",           m_SLight->m_Linear);
+        cube.shader->SetUniform1f("spotLight.quadratic",        m_SLight->m_Quadratic);
+        cube.shader->SetUniform3f("spotLight.ambient",          m_SLight->m_Ambiant);
+        cube.shader->SetUniform3f("spotLight.diffuse",          m_SLight->m_Diffuse);
+        cube.shader->SetUniform3f("spotLight.specular",         m_SLight->m_Specular);        
+        cube.shader->SetUniform1i("spotLight.on",               m_SLight->GetOnOrOff());        
+
+        //POINT LIGHT 1
+        m_PLight1 = std::make_shared<Rendering::PointLight>(glm::vec3(3.5f, 3.5f, 3.5f));
+        m_PLight1->SetShader(m_LightShader);
+        m_PLight1->SetLightSettings(ACTIVATE_LIGHT);
+        m_PLight1->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_PLight1->m_Ambiant = glm::vec3(0.1f)    * m_PLight1->m_Color;
+        m_PLight1->m_Diffuse = glm::vec3(0.5f)    * m_PLight1->m_Color;
+        m_PLight1->m_Specular = glm::vec3(1.0f)   * m_PLight1->m_Color;
+
+        cube.shader->SetUniform3f("pointLight[0].position",         m_PLight1->m_Position);
+        cube.shader->SetUniform1f("pointLight[0].constant",         m_PLight1->m_Constant);
+        cube.shader->SetUniform1f("pointLight[0].linear",           m_PLight1->m_Linear);
+        cube.shader->SetUniform1f("pointLight[0].quadratic",        m_PLight1->m_Quadratic);
+        cube.shader->SetUniform3f("pointLight[0].ambient",          m_PLight1->m_Ambiant);
+        cube.shader->SetUniform3f("pointLight[0].diffuse",          m_PLight1->m_Diffuse);
+        cube.shader->SetUniform3f("pointLight[0].specular",         m_PLight1->m_Specular);
+        cube.shader->SetUniform1i("pointLight[0].on",               m_PLight1->GetOnOrOff());        
+
+        //POINT LIGHT 2
+        m_PLight2 = std::make_shared<Rendering::PointLight>(glm::vec3(-2.0f, 0.0f, 1.5f));
+        m_PLight2->SetShader(m_LightShader);
+        m_PLight2->SetLightSettings(ACTIVATE_LIGHT);
+        m_PLight2->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_PLight2->m_Ambiant = glm::vec3(0.1f)    * m_PLight2->m_Color;
+        m_PLight2->m_Diffuse = glm::vec3(0.5f)    * m_PLight2->m_Color;
+        m_PLight2->m_Specular = glm::vec3(1.0f)   * m_PLight2->m_Color;
+
+        cube.shader->SetUniform3f("pointLight[1].position",         m_PLight2->m_Position);
+        cube.shader->SetUniform1f("pointLight[1].constant",         m_PLight2->m_Constant);
+        cube.shader->SetUniform1f("pointLight[1].linear",           m_PLight2->m_Linear);
+        cube.shader->SetUniform1f("pointLight[1].quadratic",        m_PLight2->m_Quadratic);
+        cube.shader->SetUniform3f("pointLight[1].ambient",          m_PLight2->m_Ambiant);
+        cube.shader->SetUniform3f("pointLight[1].diffuse",          m_PLight2->m_Diffuse);
+        cube.shader->SetUniform3f("pointLight[1].specular",         m_PLight2->m_Specular);
+        cube.shader->SetUniform1i("pointLight[1].on",               m_PLight2->GetOnOrOff());        
+
+        //POINT LIGHT 3
+        m_PLight3 = std::make_shared<Rendering::PointLight>(glm::vec3(-4.0f, 6.0f, -2.5f));
+        m_PLight3->SetShader(m_LightShader);
+        m_PLight3->SetLightSettings(ACTIVATE_LIGHT);
+        m_PLight3->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_PLight3->m_Ambiant = glm::vec3(0.1f)    * m_PLight3->m_Color;
+        m_PLight3->m_Diffuse = glm::vec3(0.5f)    * m_PLight3->m_Color;
+        m_PLight3->m_Specular = glm::vec3(1.0f)   * m_PLight3->m_Color;
+
+        cube.shader->SetUniform3f("pointLight[2].position",         m_PLight3->m_Position);
+        cube.shader->SetUniform1f("pointLight[2].constant",         m_PLight3->m_Constant);
+        cube.shader->SetUniform1f("pointLight[2].linear",           m_PLight3->m_Linear);
+        cube.shader->SetUniform1f("pointLight[2].quadratic",        m_PLight3->m_Quadratic);
+        cube.shader->SetUniform3f("pointLight[2].ambient",          m_PLight3->m_Ambiant);
+        cube.shader->SetUniform3f("pointLight[2].diffuse",          m_PLight3->m_Diffuse);
+        cube.shader->SetUniform3f("pointLight[2].specular",         m_PLight3->m_Specular);
+        cube.shader->SetUniform1i("pointLight[2].on",               m_PLight3->GetOnOrOff());       
+
+        //POINT LIGHT 4
+        m_PLight4 = std::make_shared<Rendering::PointLight>(glm::vec3(-1.0f, 2.0f, -1.0f));
+        m_PLight4->SetShader(m_LightShader);
+        m_PLight4->SetLightSettings(ACTIVATE_LIGHT);
+        m_PLight4->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_PLight4->m_Ambiant = glm::vec3(0.1f)    * m_PLight4->m_Color;
+        m_PLight4->m_Diffuse = glm::vec3(0.5f)    * m_PLight4->m_Color;
+        m_PLight4->m_Specular = glm::vec3(1.0f)   * m_PLight4->m_Color;
+
+        cube.shader->SetUniform3f("pointLight[3].position",         m_PLight4->m_Position);
+        cube.shader->SetUniform1f("pointLight[3].constant",         m_PLight4->m_Constant);
+        cube.shader->SetUniform1f("pointLight[3].linear",           m_PLight4->m_Linear);
+        cube.shader->SetUniform1f("pointLight[3].quadratic",        m_PLight4->m_Quadratic);
+        cube.shader->SetUniform3f("pointLight[3].ambient",          m_PLight4->m_Ambiant);
+        cube.shader->SetUniform3f("pointLight[3].diffuse",          m_PLight4->m_Diffuse);
+        cube.shader->SetUniform3f("pointLight[3].specular",         m_PLight4->m_Specular);
+        cube.shader->SetUniform1i("pointLight[3].on",               m_PLight4->GetOnOrOff());        
+
+        //DIR LIGHT
+        m_DLight = std::make_shared<Rendering::DirectionalLight>();
+        m_DLight->SetShader(m_LightShader);
+        m_DLight->SetLightSettings(ACTIVATE_LIGHT);
+        m_DLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
+        m_DLight->m_Ambiant = glm::vec3(0.1f)    * m_DLight->m_Color;
+        m_DLight->m_Diffuse = glm::vec3(0.5f)    * m_DLight->m_Color;
+        m_DLight->m_Specular = glm::vec3(1.0f)   * m_DLight->m_Color;
+
+        cube.shader->SetUniform3f("directionalLight.direction",         m_DLight->m_Direction);;
+        cube.shader->SetUniform3f("directionalLight.ambient",          m_DLight->m_Ambiant);
+        cube.shader->SetUniform3f("directionalLight.diffuse",          m_DLight->m_Diffuse);
+        cube.shader->SetUniform3f("directionalLight.specular",         m_DLight->m_Specular);
+        cube.shader->SetUniform1i("directionalLight.on",               m_DLight->GetOnOrOff());        
+
+        cube.shader->Unbind();
+    }
+
+    void TestLayer::UpdateLights(const float& deltaTime) 
+    {
+        cube.shader->Bind();
+        cube.shader->SetUniform3f("spotLight.position",         cameraPos);
+        cube.shader->SetUniform3f("spotLight.direction",        cameraFront);
+        cube.shader->Unbind();
+    }    
+
     bool TestLayer::KeyPressEvent(Event::KeyPressed& e) 
     {
         switch (e.getKeyCode())

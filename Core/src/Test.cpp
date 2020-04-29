@@ -47,6 +47,7 @@ void Test::mainLoop()
 
         Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         tl->OnRender(Window->GetDeltaTime());
+        tl->OnImGUIRender();
         ImGUIRenderEnd();
         Window->onMainLoop();
 

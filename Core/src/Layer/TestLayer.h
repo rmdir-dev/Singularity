@@ -56,6 +56,16 @@ namespace Layer
         void OnImGUIRender() override;
 
     private:
+        /*
+        Setup scene light
+        */
+        void CreateLights();
+
+        /*
+        update light movement if needed.
+        */
+        void UpdateLights(const float& deltaTime);
+
         void UpdateView();
 
         void UpdateMouvement(const float& deltaTime);
@@ -105,9 +115,11 @@ namespace Layer
         std::shared_ptr<Rendering::Texture> m_Texture;
 
         //Test Light
-        std::shared_ptr<Rendering::Lights> m_Light;
         std::shared_ptr<Rendering::DirectionalLight> m_DLight;
-        std::shared_ptr<Rendering::PointLight> m_PLight;
+        std::shared_ptr<Rendering::PointLight> m_PLight1;
+        std::shared_ptr<Rendering::PointLight> m_PLight2;
+        std::shared_ptr<Rendering::PointLight> m_PLight3;
+        std::shared_ptr<Rendering::PointLight> m_PLight4;
         std::shared_ptr<Rendering::SpotLight> m_SLight;
 
         //TEST MVP matrix
@@ -141,6 +153,13 @@ namespace Layer
         //Test objects struct
         Object cube;
         Object cube2;
+
+        //IMGUI VARIABLES
+        bool ImGUI_PLight1 = true;
+        bool ImGUI_PLight2 = true;
+        bool ImGUI_PLight3 = true;
+        bool ImGUI_PLight4 = true;
+        bool ImGUI_DLight = true;
 
     public:
     };

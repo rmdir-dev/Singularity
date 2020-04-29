@@ -68,6 +68,11 @@ namespace Rendering
         m_Shader = shader;
     }
 
+    uint Lights::GetOnOrOff() 
+    {
+        return m_Settings.Settings & ACTIVATE_LIGHT;
+    }
+
     void Lights::Draw() 
     {
         if(m_Settings.Settings & VISIBLE_LIGHT_BOX)
