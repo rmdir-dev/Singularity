@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Layer.h"
+#include "Utils/pch.h"
 
 #define INIDICE_NBR 36
 
@@ -55,6 +56,9 @@ namespace Layer
         */
         void OnImGUIRender() override;
 
+        void ImGUILightEditor(const char* title, const char* lightShaderName, bool& lightBool, std::shared_ptr<Rendering::PointLight> light);
+        void ImGUILightEditor(const char* title, const char* lightShaderName, bool& lightBool, std::shared_ptr<Rendering::DirectionalLight> light);
+
     private:
         /*
         Setup scene light
@@ -65,6 +69,22 @@ namespace Layer
         update light movement if needed.
         */
         void UpdateLights(const float& deltaTime);
+
+        /*
+        Update Lights position, ... for light that should not move during gameplay.
+        This is an editor function;
+        */
+        void UpdateStaticLights(const String& name, std::shared_ptr<Rendering::DirectionalLight> light);
+        /*
+        Update Lights position, ... for light that should not move during gameplay.
+        This is an editor function;
+        */
+        void UpdateStaticLights(const String& name, std::shared_ptr<Rendering::PointLight> light);
+        /*
+        Update Lights position, ... for light that should not move during gameplay.
+        This is an editor function;
+        */
+        void UpdateStaticLights(const String& name, std::shared_ptr<Rendering::SpotLight> light);
 
         void UpdateView();
 

@@ -68,6 +68,40 @@ namespace Rendering
         m_Shader = shader;
     }
 
+    void Lights::SetAmbiant() 
+    {
+        m_Ambiant = m_AmbiantIntensity * m_Color;
+    }
+
+    void Lights::SetSpecular() 
+    {
+        m_Specular = m_SpecularIntensity * m_Color;
+    } 
+
+    void Lights::SetDiffuse() 
+    {
+        m_Diffuse = m_DiffuseIntensity * m_Color;
+    }   
+
+    void Lights::SetAmbiant(const float intensity) 
+    {
+        m_AmbiantIntensity = intensity;
+        m_Ambiant = intensity * m_Color;
+    }
+
+
+    void Lights::SetSpecular(const float intensity) 
+    {
+        m_SpecularIntensity = intensity;
+        m_Specular = intensity * m_Color;
+    } 
+
+    void Lights::SetDiffuse(const float intensity) 
+    {
+        m_DiffuseIntensity = intensity;
+        m_Diffuse = intensity * m_Color;
+    }   
+
     uint Lights::GetOnOrOff() 
     {
         return m_Settings.Settings & ACTIVATE_LIGHT;

@@ -65,6 +65,16 @@ namespace Rendering
 
         void SetShader(const std::shared_ptr<Shader> shader);
 
+        /**/
+        void SetAmbiant();
+        void SetAmbiant(const float intensity);
+        /**/
+        void SetSpecular();
+        void SetSpecular(const float intensity);
+        /**/
+        void SetDiffuse();
+        void SetDiffuse(const float intensity);
+
         /*
         return if the light is on or off.
         */
@@ -84,6 +94,9 @@ namespace Rendering
         glm::vec3 m_Position;
         glm::vec3 m_Color;
         float m_Intensity;
+        float m_AmbiantIntensity    = 0.1f;
+        float m_DiffuseIntensity    = 0.5f;
+        float m_SpecularIntensity   = 1.0f;
         glm::vec3 m_Ambiant;
         glm::vec3 m_Diffuse;
         glm::vec3 m_Specular;

@@ -175,97 +175,155 @@ namespace Layer
 
     void TestLayer::OnImGUIRender() 
     {
-        if(ImGui::Button("Point Light 1"))
+        ImGUILightEditor("Point Light 1", "pointLight[0]", ImGUI_PLight1, m_PLight1);
+        ImGUILightEditor("Point Light 2", "pointLight[1]", ImGUI_PLight2, m_PLight2);
+        ImGUILightEditor("Point Light 3", "pointLight[2]", ImGUI_PLight3, m_PLight3);
+        ImGUILightEditor("Point Light 4", "pointLight[3]", ImGUI_PLight4, m_PLight4);
+        ImGUILightEditor("Dir Light", "directionalLight", ImGUI_DLight, m_DLight);    
+    }
+
+    void TestLayer::ImGUILightEditor(const char* title, const char* lightShaderName, bool& lightBool, std::shared_ptr<Rendering::PointLight> light) 
+    {
+        if(ImGui::CollapsingHeader(title))
         {
-            if(ImGUI_PLight1)
+            if(ImGui::Button(lightBool ? "Light Status : On" : "Light Status : Off"))
             {
-                cube.shader->Bind();
-                ImGUI_PLight1 = false;
-                m_PLight1->SetLightSettings(0x00);
-                cube.shader->SetUniform1i("pointLight[0].on", m_PLight1->GetOnOrOff());  
-                cube.shader->Unbind();
-            } else 
+                if(lightBool)
+                {
+                    lightBool = false;
+                    light->SetLightSettings(0x00);
+                    UpdateStaticLights(lightShaderName, light);
+                } else 
+                {
+                    lightBool = true;
+                    light->SetLightSettings(ACTIVATE_LIGHT);
+                    UpdateStaticLights(lightShaderName, light);
+                }
+            }
+
+            if(ImGui::SliderFloat("Position x", &light->m_Position.x, -100.0f, 100.0f))
             {
-                cube.shader->Bind();
-                ImGUI_PLight1 = true;
-                m_PLight1->SetLightSettings(ACTIVATE_LIGHT);
-                cube.shader->SetUniform1i("pointLight[0].on", m_PLight1->GetOnOrOff());  
-                cube.shader->Unbind();
+                UpdateStaticLights(lightShaderName, light);
+            }
+
+            if(ImGui::SliderFloat("Position y", &light->m_Position.y, -100.0f, 100.0f))
+            {
+                UpdateStaticLights(lightShaderName, light);
+            }
+
+            if(ImGui::SliderFloat("Position z", &light->m_Position.z, -100.0f, 100.0f))
+            {
+                UpdateStaticLights(lightShaderName, light);
+            }
+
+            float Color[3];
+            Color[0] = light->m_Color.r;
+            Color[1] = light->m_Color.g;
+            Color[2] = light->m_Color.b;
+            if(ImGui::ColorEdit3("Color", Color))
+            {
+                light->m_Color.r = Color[0];
+                light->m_Color.g = Color[1];
+                light->m_Color.b = Color[2];
+                light->SetAmbiant();
+                light->SetDiffuse();
+                light->SetSpecular();
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Ambiant intensity", &light->m_AmbiantIntensity, 0.0f, 1.0f))
+            {
+                light->SetAmbiant();
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Diffuse intensity", &light->m_DiffuseIntensity, 0.0f, 1.0f))
+            {
+                light->SetDiffuse();
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Specular intensity", &light->m_SpecularIntensity, 0.0f, 1.0f))
+            {
+                light->SetSpecular();
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Constant", &light->m_Constant, 0.0f, 1.0f))
+            {
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Linear", &light->m_Linear, 0.0f, 1.0f))
+            {
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Quadratic", &light->m_Quadratic, 0.0f, 1.0f))
+            {
+                UpdateStaticLights(lightShaderName, light);
             }
         }
-        if(ImGui::Button("Point Light 2"))
+    }
+
+    void TestLayer::ImGUILightEditor(const char* title, const char* lightShaderName, bool& lightBool, std::shared_ptr<Rendering::DirectionalLight> light) 
+    {
+        if(ImGui::CollapsingHeader(title))
         {
-            if(ImGUI_PLight2)
+            if(ImGui::Button(lightBool ? "Light Status : On" : "Light Status : Off"))
             {
-                cube.shader->Bind();
-                ImGUI_PLight2 = false;
-                m_PLight2->SetLightSettings(0x00);
-                cube.shader->SetUniform1i("pointLight[1].on", m_PLight2->GetOnOrOff());   
-                cube.shader->Unbind();
-            } else 
+                if(lightBool)
+                {
+                    lightBool = false;
+                    light->SetLightSettings(0x00);
+                    UpdateStaticLights(lightShaderName, light);
+                } else 
+                {
+                    lightBool = true;
+                    light->SetLightSettings(ACTIVATE_LIGHT);
+                    UpdateStaticLights(lightShaderName, light);
+                }
+            }
+
+            if(ImGui::SliderFloat("Direction x", &light->m_Direction.x, -1.0f, 1.0f))
             {
-                cube.shader->Bind();
-                ImGUI_PLight2 = true;
-                m_PLight2->SetLightSettings(ACTIVATE_LIGHT);
-                cube.shader->SetUniform1i("pointLight[1].on", m_PLight2->GetOnOrOff()); 
-                cube.shader->Unbind(); 
+                UpdateStaticLights(lightShaderName, light);
+            }
+
+            if(ImGui::SliderFloat("Direction y", &light->m_Direction.y, -1.0f, 1.0f))
+            {
+                UpdateStaticLights(lightShaderName, light);
+            }
+
+            if(ImGui::SliderFloat("Direction z", &light->m_Direction.z, -1.0f, 1.0f))
+            {
+                UpdateStaticLights(lightShaderName, light);
+            }
+
+            float Color[3];
+            Color[0] = light->m_Color.r;
+            Color[1] = light->m_Color.g;
+            Color[2] = light->m_Color.b;
+            if(ImGui::ColorEdit3("Color", Color))
+            {
+                light->m_Color.r = Color[0];
+                light->m_Color.g = Color[1];
+                light->m_Color.b = Color[2];
+                light->SetAmbiant();
+                light->SetDiffuse();
+                light->SetSpecular();
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Ambiant intensity", &light->m_AmbiantIntensity, 0.0f, 1.0f))
+            {
+                light->SetAmbiant();
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Diffuse intensity", &light->m_DiffuseIntensity, 0.0f, 1.0f))
+            {
+                light->SetDiffuse();
+                UpdateStaticLights(lightShaderName, light);
+            }
+            if(ImGui::SliderFloat("Specular intensity", &light->m_SpecularIntensity, 0.0f, 1.0f))
+            {
+                light->SetSpecular();
+                UpdateStaticLights(lightShaderName, light);
             }
         }
-        if(ImGui::Button("Point Light 3"))
-        {
-            if(ImGUI_PLight3)
-            {
-                cube.shader->Bind();
-                ImGUI_PLight3 = false;
-                m_PLight3->SetLightSettings(0x00);
-                cube.shader->SetUniform1i("pointLight[2].on", m_PLight3->GetOnOrOff()); 
-                cube.shader->Unbind();  
-            } else 
-            {
-                cube.shader->Bind();
-                ImGUI_PLight3 = true;
-                m_PLight3->SetLightSettings(ACTIVATE_LIGHT);
-                cube.shader->SetUniform1i("pointLight[2].on", m_PLight3->GetOnOrOff()); 
-                cube.shader->Unbind(); 
-            }
-        }
-        if(ImGui::Button("Point Light 4"))
-        {
-            if(ImGUI_PLight4)
-            {
-                cube.shader->Bind();
-                ImGUI_PLight4 = false;
-                m_PLight4->SetLightSettings(0x00);
-                cube.shader->SetUniform1i("pointLight[3].on", m_PLight4->GetOnOrOff()); 
-                cube.shader->Unbind();  
-            } else 
-            {
-                cube.shader->Bind();
-                ImGUI_PLight4 = true;
-                m_PLight4->SetLightSettings(ACTIVATE_LIGHT);
-                cube.shader->SetUniform1i("pointLight[3].on", m_PLight4->GetOnOrOff()); 
-                cube.shader->Unbind();                  
-            }
-        }
-        if(ImGui::Button("Dir Light"))
-        {
-            if(ImGUI_DLight)
-            {
-                cube.shader->Bind();
-                ImGUI_DLight = false;
-                m_DLight->SetLightSettings(0x00);
-                cube.shader->SetUniform1i("directionalLight.on", m_DLight->GetOnOrOff());  
-                cube.shader->Unbind();   
-            } else 
-            {
-                cube.shader->Bind();
-                ImGUI_DLight = true;
-                m_DLight->SetLightSettings(ACTIVATE_LIGHT);
-                cube.shader->SetUniform1i("directionalLight.on", m_DLight->GetOnOrOff());  
-                cube.shader->Unbind();  
-            }
-        }
-        cube.shader->Unbind(); 
     }
 
     void TestLayer::CreateLights() 
@@ -277,9 +335,9 @@ namespace Layer
         m_SLight->SetShader(m_LightShader);
         m_SLight->SetLightSettings(ACTIVATE_LIGHT);
         m_SLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_SLight->m_Ambiant = glm::vec3(0.1f)    * m_SLight->m_Color;
-        m_SLight->m_Diffuse = glm::vec3(0.5f)    * m_SLight->m_Color;
-        m_SLight->m_Specular = glm::vec3(1.0f)   * m_SLight->m_Color;
+        m_SLight->SetAmbiant(0.1f);
+        m_SLight->SetDiffuse(0.5f);
+        m_SLight->SetSpecular(1.0f);
         m_SLight->m_Direction = cameraFront;
         m_SLight->m_Position = cameraPos;
         
@@ -300,9 +358,9 @@ namespace Layer
         m_PLight1->SetShader(m_LightShader);
         m_PLight1->SetLightSettings(ACTIVATE_LIGHT);
         m_PLight1->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_PLight1->m_Ambiant = glm::vec3(0.1f)    * m_PLight1->m_Color;
-        m_PLight1->m_Diffuse = glm::vec3(0.5f)    * m_PLight1->m_Color;
-        m_PLight1->m_Specular = glm::vec3(1.0f)   * m_PLight1->m_Color;
+        m_PLight1->SetAmbiant(0.1f);
+        m_PLight1->SetDiffuse(0.5f);
+        m_PLight1->SetSpecular(1.0f);
 
         cube.shader->SetUniform3f("pointLight[0].position",         m_PLight1->m_Position);
         cube.shader->SetUniform1f("pointLight[0].constant",         m_PLight1->m_Constant);
@@ -318,9 +376,9 @@ namespace Layer
         m_PLight2->SetShader(m_LightShader);
         m_PLight2->SetLightSettings(ACTIVATE_LIGHT);
         m_PLight2->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_PLight2->m_Ambiant = glm::vec3(0.1f)    * m_PLight2->m_Color;
-        m_PLight2->m_Diffuse = glm::vec3(0.5f)    * m_PLight2->m_Color;
-        m_PLight2->m_Specular = glm::vec3(1.0f)   * m_PLight2->m_Color;
+        m_PLight2->SetAmbiant(0.1f);
+        m_PLight2->SetDiffuse(0.5f);
+        m_PLight2->SetSpecular(1.0f);
 
         cube.shader->SetUniform3f("pointLight[1].position",         m_PLight2->m_Position);
         cube.shader->SetUniform1f("pointLight[1].constant",         m_PLight2->m_Constant);
@@ -336,9 +394,9 @@ namespace Layer
         m_PLight3->SetShader(m_LightShader);
         m_PLight3->SetLightSettings(ACTIVATE_LIGHT);
         m_PLight3->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_PLight3->m_Ambiant = glm::vec3(0.1f)    * m_PLight3->m_Color;
-        m_PLight3->m_Diffuse = glm::vec3(0.5f)    * m_PLight3->m_Color;
-        m_PLight3->m_Specular = glm::vec3(1.0f)   * m_PLight3->m_Color;
+        m_PLight3->SetAmbiant(0.1f);
+        m_PLight3->SetDiffuse(0.5f);
+        m_PLight3->SetSpecular(1.0f);
 
         cube.shader->SetUniform3f("pointLight[2].position",         m_PLight3->m_Position);
         cube.shader->SetUniform1f("pointLight[2].constant",         m_PLight3->m_Constant);
@@ -354,9 +412,9 @@ namespace Layer
         m_PLight4->SetShader(m_LightShader);
         m_PLight4->SetLightSettings(ACTIVATE_LIGHT);
         m_PLight4->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_PLight4->m_Ambiant = glm::vec3(0.1f)    * m_PLight4->m_Color;
-        m_PLight4->m_Diffuse = glm::vec3(0.5f)    * m_PLight4->m_Color;
-        m_PLight4->m_Specular = glm::vec3(1.0f)   * m_PLight4->m_Color;
+        m_PLight4->SetAmbiant(0.1f);
+        m_PLight4->SetDiffuse(0.5f);
+        m_PLight4->SetSpecular(1.0f);
 
         cube.shader->SetUniform3f("pointLight[3].position",         m_PLight4->m_Position);
         cube.shader->SetUniform1f("pointLight[3].constant",         m_PLight4->m_Constant);
@@ -372,9 +430,9 @@ namespace Layer
         m_DLight->SetShader(m_LightShader);
         m_DLight->SetLightSettings(ACTIVATE_LIGHT);
         m_DLight->m_Color = glm::vec3(1.0, 1.0, 1.0);
-        m_DLight->m_Ambiant = glm::vec3(0.1f)    * m_DLight->m_Color;
-        m_DLight->m_Diffuse = glm::vec3(0.5f)    * m_DLight->m_Color;
-        m_DLight->m_Specular = glm::vec3(1.0f)   * m_DLight->m_Color;
+        m_DLight->SetAmbiant(0.1f);
+        m_DLight->SetDiffuse(0.5f);
+        m_DLight->SetSpecular(1.0f);
 
         cube.shader->SetUniform3f("directionalLight.direction",         m_DLight->m_Direction);;
         cube.shader->SetUniform3f("directionalLight.ambient",          m_DLight->m_Ambiant);
@@ -390,6 +448,48 @@ namespace Layer
         cube.shader->Bind();
         cube.shader->SetUniform3f("spotLight.position",         cameraPos);
         cube.shader->SetUniform3f("spotLight.direction",        cameraFront);
+        cube.shader->Unbind();
+    } 
+    
+    void TestLayer::UpdateStaticLights(const String& name, std::shared_ptr<Rendering::DirectionalLight> light) 
+    {
+        cube.shader->Bind();
+        cube.shader->SetUniform3f((name + ".direction").c_str(),        light->m_Direction);
+        cube.shader->SetUniform3f((name + ".ambient").c_str(),          light->m_Ambiant);
+        cube.shader->SetUniform3f((name + ".diffuse").c_str(),          light->m_Diffuse);
+        cube.shader->SetUniform3f((name + ".specular").c_str(),         light->m_Specular);
+        cube.shader->SetUniform1i((name + ".on").c_str(),               light->GetOnOrOff());
+        cube.shader->Unbind();
+    }
+
+    void TestLayer::UpdateStaticLights(const String& name, std::shared_ptr<Rendering::SpotLight> light) 
+    {
+        cube.shader->Bind();
+        cube.shader->SetUniform3f((name + ".position").c_str(),         light->m_Position);
+        cube.shader->SetUniform3f((name + ".direction").c_str(),        light->m_Direction);
+        cube.shader->SetUniform3f((name + ".ambient").c_str(),          light->m_Ambiant);
+        cube.shader->SetUniform3f((name + ".diffuse").c_str(),          light->m_Diffuse);
+        cube.shader->SetUniform3f((name + ".specular").c_str(),         light->m_Specular);
+        cube.shader->SetUniform1f((name + ".cutOff").c_str(),           light->m_CutOff);
+        cube.shader->SetUniform1f((name + ".outerCutOff").c_str(),      light->m_OuterCutOff);
+        cube.shader->SetUniform1f((name + ".constant").c_str(),         light->m_Constant);
+        cube.shader->SetUniform1f((name + ".linear").c_str(),           light->m_Linear);
+        cube.shader->SetUniform1f((name + ".quadratic").c_str(),        light->m_Quadratic);
+        cube.shader->SetUniform1i((name + ".on").c_str(),               light->GetOnOrOff());
+        cube.shader->Unbind();
+    }
+
+    void TestLayer::UpdateStaticLights(const String& name, std::shared_ptr<Rendering::PointLight> light) 
+    {
+        cube.shader->Bind();
+        cube.shader->SetUniform3f((name + ".position").c_str(),         light->m_Position);
+        cube.shader->SetUniform3f((name + ".ambient").c_str(),          light->m_Ambiant);
+        cube.shader->SetUniform3f((name + ".diffuse").c_str(),          light->m_Diffuse);
+        cube.shader->SetUniform3f((name + ".specular").c_str(),         light->m_Specular);
+        cube.shader->SetUniform1f((name + ".constant").c_str(),         light->m_Constant);
+        cube.shader->SetUniform1f((name + ".linear").c_str(),           light->m_Linear);
+        cube.shader->SetUniform1f((name + ".quadratic").c_str(),        light->m_Quadratic);
+        cube.shader->SetUniform1i((name + ".on").c_str(),               light->GetOnOrOff());
         cube.shader->Unbind();
     }    
 
